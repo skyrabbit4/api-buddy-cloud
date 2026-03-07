@@ -1,59 +1,79 @@
-# ApiBuddyCloud
+# API Buddy Cloud
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.4.
+A web application for creating and managing mock API endpoints, built with Angular 20 and Supabase.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- **Mock API Endpoints** – Create, edit, and manage mock API endpoints with custom responses
+- **Dashboard** – Organize and view all your endpoints in one place
+- **OAuth Authentication** – Sign in with Google or GitHub via Supabase Auth
+- **Dark Theme** – Tailwind CSS dark-themed responsive UI
 
-```bash
-ng serve
-```
+## Tech Stack
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- **Frontend:** Angular 20, TypeScript, Tailwind CSS
+- **Backend:** Supabase (PostgreSQL, Auth, API)
+- **Icons:** Angular Feather
 
-## Code scaffolding
+## Getting Started
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Prerequisites
 
-```bash
-ng generate component component-name
-```
+- [Node.js](https://nodejs.org/) (v18+)
+- [Angular CLI](https://angular.dev/tools/cli)
+- A [Supabase](https://supabase.com/) project
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Setup
 
-```bash
-ng generate --help
-```
+1. **Clone the repository:**
 
-## Building
+   ```bash
+   git clone https://github.com/skyrabbit4/api-buddy-cloud.git
+   cd api-buddy-cloud
+   ```
 
-To build the project run:
+2. **Install dependencies:**
+
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables:**
+
+   Copy the example environment file and fill in your Supabase credentials:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Then update `src/environments/environment.ts` (and `environment.prod.ts` for production) with your Supabase project URL and anon key. You can find these in your [Supabase Dashboard](https://supabase.com/dashboard) under **Settings → API**.
+
+4. **Start the development server:**
+
+   ```bash
+   ng serve
+   ```
+
+   Open your browser at `http://localhost:4200/`.
+
+### Building
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Build artifacts are stored in the `dist/` directory.
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Running Tests
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+## License
 
-For end-to-end (e2e) testing, run:
+This project is licensed under the [MIT License](LICENSE).
 
-```bash
-ng e2e
-```
+## Contributing
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Contributions are welcome! Feel free to open issues or submit pull requests.
