@@ -77,6 +77,13 @@
   padding: 2rem 1rem;
 }
 
+.greeting {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  margin-bottom: 1.5rem;
+}
+
 .dashboard-top {
   display: flex;
   align-items: center;

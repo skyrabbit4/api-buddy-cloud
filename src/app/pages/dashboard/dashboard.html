@@ -16,6 +16,9 @@
   </header>
 
   <div class="dashboard-content">
+    <!-- Greeting -->
+    <p class="greeting" *ngIf="firstName$ | async as name">{{ greeting }}, {{ name }} 👋</p>
+
     <div class="dashboard-top">
       <div>
         <h1>
