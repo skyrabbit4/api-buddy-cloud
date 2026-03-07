@@ -1,0 +1,49 @@
+<div class="dashboard-page">
+  <!-- Top bar -->
+  <header class="dashboard-header">
+    <div class="header-content">
+      <a routerLink="/" class="brand">
+        <div class="brand-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+        </div>
+        <span>MockAPI</span>
+      </a>
+      <div class="header-actions">
+        <span class="plan-badge">Free Plan</span>
+        <app-profile-menu></app-profile-menu>
+      </div>
+    </div>
+  </header>
+
+  <div class="dashboard-content">
+    <div class="dashboard-top">
+      <div>
+        <h1>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="title-icon"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+          Your Endpoints
+        </h1>
+        <p class="endpoint-count">{{ endpoints.length }} endpoint{{ endpoints.length !== 1 ? 's' : '' }} created</p>
+      </div>
+      <app-create-endpoint-dialog (created)="refresh()"></app-create-endpoint-dialog>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state" *ngIf="endpoints.length === 0">
+      <div class="empty-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+      </div>
+      <h3>No endpoints yet</h3>
+      <p>Create your first mock endpoint to start building your frontend without waiting for the backend.</p>
+      <app-create-endpoint-dialog (created)="refresh()"></app-create-endpoint-dialog>
+    </div>
+
+    <!-- Endpoint grid -->
+    <div class="endpoints-grid" *ngIf="endpoints.length > 0">
+      <app-endpoint-card
+        *ngFor="let endpoint of endpoints"
+        [endpoint]="endpoint"
+        (refresh)="refresh()">
+      </app-endpoint-card>
+    </div>
+  </div>
+</div>

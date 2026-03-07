@@ -1,0 +1,33 @@
+<section id="pricing" class="pricing-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Simple, <span class="text-gradient">transparent</span> pricing</h2>
+      <p>Start free. Upgrade when you need more.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="plan-card" *ngFor="let plan of plans" [class.highlighted]="plan.highlighted">
+        <div class="popular-badge" *ngIf="plan.highlighted">Most Popular</div>
+        <div class="plan-header">
+          <h3>{{ plan.name }}</h3>
+          <div class="plan-price">
+            <span class="price">{{ plan.price }}</span>
+            <span class="period">{{ plan.period }}</span>
+          </div>
+          <p class="plan-desc">{{ plan.description }}</p>
+        </div>
+
+        <ul class="plan-features">
+          <li *ngFor="let feature of plan.features">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <span>{{ feature }}</span>
+          </li>
+        </ul>
+
+        <button class="plan-btn" [class.plan-btn-primary]="plan.highlighted" [class.plan-btn-outline]="!plan.highlighted" (click)="goToDashboard()">
+          {{ plan.cta }}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
