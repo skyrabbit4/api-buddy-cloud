@@ -24,7 +24,6 @@ export class AuthService {
     // - SIGNED_OUT: fires on sign out
     // - TOKEN_REFRESHED: fires on token refresh
     this.supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
-      console.log('[Auth]', event, session ? 'session exists' : 'no session');
       this._session.next(session);
       this._isLoaded.next(true);
 
