@@ -41,7 +41,6 @@ __screenshots__/
 # Environment files
 .env
 .env.*
-!.env.example
 
 # System files
 .DS_Store

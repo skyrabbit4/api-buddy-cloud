@@ -38,15 +38,9 @@ A web application for creating and managing mock API endpoints, built with Angul
    npm install
    ```
 
-3. **Configure environment variables:**
+3. **Configure Supabase credentials:**
 
-   Copy the example environment file and fill in your Supabase credentials:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-   Then update `src/environments/environment.ts` (and `environment.prod.ts` for production) with your Supabase project URL and anon key. You can find these in your [Supabase Dashboard](https://supabase.com/dashboard) under **Settings → API**.
+   Update `src/environments/environment.ts` (and `environment.prod.ts` for production) with your Supabase project URL and anon key. You can find these in your [Supabase Dashboard](https://supabase.com/dashboard) under **Settings → API**.
 
 4. **Start the development server:**
 
