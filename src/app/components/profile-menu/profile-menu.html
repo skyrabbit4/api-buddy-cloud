@@ -1,0 +1,45 @@
+<div class="profile-menu" *ngIf="profile$ | async as profile">
+  <button class="avatar-btn" (click)="toggle()" [title]="profile.name">
+    <img
+      *ngIf="profile.avatarUrl"
+      [src]="profile.avatarUrl"
+      [alt]="profile.name"
+      class="avatar-img"
+      referrerpolicy="no-referrer"
+    />
+    <span *ngIf="!profile.avatarUrl" class="avatar-initials">
+      {{ profile.initials }}
+    </span>
+  </button>
+
+  <div class="dropdown" *ngIf="isOpen">
+    <div class="dropdown-header">
+      <div class="dropdown-avatar">
+        <img
+          *ngIf="profile.avatarUrl"
+          [src]="profile.avatarUrl"
+          [alt]="profile.name"
+          class="dropdown-avatar-img"
+          referrerpolicy="no-referrer"
+        />
+        <span *ngIf="!profile.avatarUrl" class="dropdown-avatar-initials">
+          {{ profile.initials }}
+        </span>
+      </div>
+      <div class="dropdown-info">
+        <p class="dropdown-name">{{ profile.name }}</p>
+        <p class="dropdown-email">{{ profile.email }}</p>
+      </div>
+    </div>
+    <div class="dropdown-divider"></div>
+    <a routerLink="/dashboard" class="dropdown-item" (click)="isOpen = false">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+      Dashboard
+    </a>
+    <div class="dropdown-divider"></div>
+    <button class="dropdown-item dropdown-item-danger" (click)="signOut()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+      Sign out
+    </button>
+  </div>
+</div>
