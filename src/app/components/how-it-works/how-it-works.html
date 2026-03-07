@@ -1,0 +1,21 @@
+<section id="how-it-works" class="how-it-works-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Three steps. <span class="text-gradient">Zero friction.</span></h2>
+      <p>From nothing to a live mock endpoint in under a minute.</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card" *ngFor="let step of steps">
+        <div class="step-content">
+          <span class="step-number">{{ step.step }}</span>
+          <h3>{{ step.title }}</h3>
+          <p>{{ step.description }}</p>
+        </div>
+        <div class="step-code">
+          <pre>{{ step.code }}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
