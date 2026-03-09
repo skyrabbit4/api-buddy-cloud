@@ -42,6 +42,21 @@ export class CreateEndpointDialogComponent {
       return;
     }
 
+    if (!this.path.startsWith('/')) {
+      this.error = 'Path must start with /';
+      return;
+    }
+
+    if (this.statusCode < 100 || this.statusCode > 599) {
+      this.error = 'Status code must be between 100 and 599';
+      return;
+    }
+
+    if (this.delay < 0 || this.delay > 30000) {
+      this.error = 'Delay must be between 0 and 30000ms';
+      return;
+    }
+
     try {
       JSON.parse(this.responseBody);
     } catch {

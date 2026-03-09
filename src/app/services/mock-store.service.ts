@@ -19,18 +19,31 @@ export interface MockEndpoint {
 })
 export class MockStoreService {
   private readonly STORAGE_KEY = 'mockapi_endpoints';
+  private cache: MockEndpoint[] | null = null;
 
   private generateId(): string {
-    return Math.random().toString(36).substring(2, 10);
+    return crypto.randomUUID();
   }
 
   getEndpoints(): MockEndpoint[] {
-    const data = localStorage.getItem(this.STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
+    if (this.cache) return this.cache;
+    try {
+      const data = localStorage.getItem(this.STORAGE_KEY);
+      this.cache = data ? JSON.parse(data) : [];
+      return this.cache ?? [];
+    } catch {
+      console.warn('Failed to read from localStorage');
+      return [];
+    }
   }
 
   private saveEndpoints(endpoints: MockEndpoint[]): void {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(endpoints));
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(endpoints));
+      this.cache = endpoints;
+    } catch (err) {
+      console.error('Failed to save to localStorage:', err);
+    }
   }
 
   addEndpoint(endpoint: Omit<MockEndpoint, 'id' | 'createdAt' | 'isActive'>): MockEndpoint {

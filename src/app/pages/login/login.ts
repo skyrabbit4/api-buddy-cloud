@@ -16,8 +16,8 @@ export class LoginComponent {
     try {
       this.error = null;
       await this.authService.signInWithGoogle();
-    } catch (err: any) {
-      this.error = err.message;
+    } catch (err: unknown) {
+      this.error = err instanceof Error ? err.message : 'Failed to sign in with Google';
     }
   }
 
@@ -25,8 +25,8 @@ export class LoginComponent {
     try {
       this.error = null;
       await this.authService.signInWithGitHub();
-    } catch (err: any) {
-      this.error = err.message;
+    } catch (err: unknown) {
+      this.error = err instanceof Error ? err.message : 'Failed to sign in with GitHub';
     }
   }
 }
