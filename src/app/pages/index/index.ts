@@ -1,5 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 
+const SCROLL_TOP_THRESHOLD = 400;
+
 @Component({
   selector: 'app-index',
   standalone: false,
@@ -11,7 +13,7 @@ export class IndexComponent {
 
   @HostListener('window:scroll')
   onScroll(): void {
-    this.showScrollTop = window.scrollY > 400;
+    this.showScrollTop = window.scrollY > SCROLL_TOP_THRESHOLD;
   }
 
   scrollToTop(): void {

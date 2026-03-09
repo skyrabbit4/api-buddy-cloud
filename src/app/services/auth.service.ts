@@ -34,17 +34,19 @@ export class AuthService {
   }
 
   async signInWithGoogle(): Promise<void> {
-    await this.supabase.auth.signInWithOAuth({
+    const { error } = await this.supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: window.location.origin + '/auth/callback' },
     });
+    if (error) throw error;
   }
 
   async signInWithGitHub(): Promise<void> {
-    await this.supabase.auth.signInWithOAuth({
+    const { error } = await this.supabase.auth.signInWithOAuth({
       provider: 'github',
       options: { redirectTo: window.location.origin + '/auth/callback' },
     });
+    if (error) throw error;
   }
 
   async signOut(): Promise<void> {

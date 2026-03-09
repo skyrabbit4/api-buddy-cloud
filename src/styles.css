@@ -107,3 +107,39 @@
 .method-put-bg { background-color: hsl(var(--method-put) / 0.15); }
 .method-delete-bg { background-color: hsl(var(--method-delete) / 0.15); }
 .method-patch-bg { background-color: hsl(var(--method-patch) / 0.15); }
+
+/* Shared layout utilities */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: hsl(var(--foreground));
+  margin-bottom: 1rem;
+}
+
+.section-header p {
+  max-width: 36rem;
+  margin: 0 auto;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Shared error message */
+.error-message {
+  background-color: hsl(0 50% 15%);
+  color: hsl(0 80% 80%);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}

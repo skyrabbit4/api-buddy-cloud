@@ -15,29 +15,29 @@
 
       <div class="form-group">
         <label for="name">Name</label>
-        <input id="name" type="text" placeholder="Get all users" [(ngModel)]="name">
+        <input id="name" type="text" placeholder="Get all users" [(ngModel)]="name" required>
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label>Method</label>
-          <select [(ngModel)]="method">
+          <select [(ngModel)]="method" required>
             <option *ngFor="let m of methods" [value]="m">{{ m }}</option>
           </select>
         </div>
         <div class="form-group">
           <label>Status Code</label>
-          <input type="number" [(ngModel)]="statusCode">
+          <input type="number" [(ngModel)]="statusCode" min="100" max="599" required>
         </div>
         <div class="form-group">
           <label>Delay (ms)</label>
-          <input type="number" [(ngModel)]="delay">
+          <input type="number" [(ngModel)]="delay" min="0" max="30000">
         </div>
       </div>
 
       <div class="form-group">
         <label for="path">Path</label>
-        <input id="path" type="text" placeholder="/api/v1/users" [(ngModel)]="path" class="mono">
+        <input id="path" type="text" placeholder="/api/v1/users" [(ngModel)]="path" class="mono" required pattern="^/.*">
       </div>
 
       <div class="form-group">
