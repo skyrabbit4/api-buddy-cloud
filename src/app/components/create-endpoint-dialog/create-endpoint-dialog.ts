@@ -34,6 +34,7 @@ export class CreateEndpointDialogComponent {
   close(): void {
     this.isOpen = false;
     this.error = null;
+    this.resetForm();
   }
 
   create(): void {
@@ -74,7 +75,8 @@ export class CreateEndpointDialogComponent {
     });
 
     this.created.emit();
-    this.close();
+    this.isOpen = false;
+    this.error = null;
     this.resetForm();
   }
 

@@ -3,7 +3,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SupabaseService {
   private supabase: SupabaseClient;
@@ -11,11 +11,11 @@ export class SupabaseService {
   constructor() {
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey, {
       auth: {
-        flowType: 'implicit',
-        detectSessionInUrl: false,
+        flowType: 'pkce',
+        detectSessionInUrl: true,
         autoRefreshToken: true,
         persistSession: true,
-      }
+      },
     });
   }
 

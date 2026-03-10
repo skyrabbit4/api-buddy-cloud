@@ -18,16 +18,17 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private mockStore: MockStoreService
+    private mockStore: MockStoreService,
   ) {
     this.session$ = this.authService.session$;
     this.firstName$ = this.session$.pipe(
-      map(session => {
+      map((session) => {
         if (!session?.user) return '';
         const meta = session.user.user_metadata || {};
-        const fullName = meta['full_name'] || meta['name'] || session.user.email?.split('@')[0] || '';
+        const fullName =
+          meta['full_name'] || meta['name'] || session.user.email?.split('@')[0] || '';
         return fullName.split(' ')[0];
-      })
+      }),
     );
   }
 
@@ -46,7 +47,7 @@ export class DashboardComponent implements OnInit {
     this.endpoints = this.mockStore.getEndpoints();
   }
 
-  signOut(): void {
-    this.authService.signOut();
+  trackByEndpointId(_index: number, endpoint: MockEndpoint): string {
+    return endpoint.id;
   }
 }

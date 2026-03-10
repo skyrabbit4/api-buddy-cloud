@@ -1,6 +1,7 @@
 .how-it-works-section {
   padding: 6rem 0;
   border-top: 1px solid hsl(var(--border));
+  scroll-margin-top: 64px;
 }
 
 .steps-grid {

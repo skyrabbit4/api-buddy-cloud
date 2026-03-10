@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
   styleUrl: './hero.css',
 })
 export class HeroComponent {
+  copied = false;
+
   constructor(private router: Router) {}
 
   goToDashboard(): void {
@@ -16,6 +18,9 @@ export class HeroComponent {
 
   copyCode(): void {
     const code = `fetch("https://mockapi.dev/api/v1/users")\n  .then(res => res.json())\n  .then(data => console.log(data))`;
-    navigator.clipboard.writeText(code);
+    navigator.clipboard.writeText(code).then(() => {
+      this.copied = true;
+      setTimeout(() => (this.copied = false), 2000);
+    });
   }
 }

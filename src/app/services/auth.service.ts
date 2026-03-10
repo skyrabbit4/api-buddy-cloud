@@ -15,7 +15,14 @@ export class AuthService {
   public session$: Observable<Session | null> = this._session.asObservable();
   public isLoaded$: Observable<boolean> = this._isLoaded.asObservable();
 
-  constructor(private router: Router, private supabaseService: SupabaseService) {
+  get currentSession(): Session | null {
+    return this._session.getValue();
+  }
+
+  constructor(
+    private router: Router,
+    private supabaseService: SupabaseService,
+  ) {
     this.supabase = this.supabaseService.getSupabase();
 
     // onAuthStateChange handles everything:

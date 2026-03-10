@@ -11,6 +11,8 @@ export class EndpointCardComponent {
   @Input() endpoint!: MockEndpoint;
   @Output() refresh = new EventEmitter<void>();
 
+  urlCopied = false;
+
   methodColors: Record<string, string> = {
     GET: 'method-get',
     POST: 'method-post',
@@ -42,7 +44,10 @@ export class EndpointCardComponent {
   }
 
   copyUrl(): void {
-    navigator.clipboard.writeText(this.mockUrl);
+    navigator.clipboard.writeText(this.mockUrl).then(() => {
+      this.urlCopied = true;
+      setTimeout(() => (this.urlCopied = false), 2000);
+    });
   }
 
   deleteEndpoint(): void {

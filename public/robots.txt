@@ -1,0 +1,10 @@
+# robots.txt for MockAPI
+User-agent: *
+Allow: /
+
+# Disallow authenticated areas from indexing
+Disallow: /dashboard
+Disallow: /auth-callback
+
+# Sitemap location
+Sitemap: https://mockapi.dev/sitemap.xml

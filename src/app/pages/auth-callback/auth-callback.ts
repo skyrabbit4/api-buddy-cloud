@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { SupabaseService } from '../../services/supabase.service';
+import { Subscription } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
+import { AuthService } from '../../services/auth.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-auth-callback',
@@ -8,40 +11,58 @@ import { SupabaseService } from '../../services/supabase.service';
   templateUrl: './auth-callback.html',
   styleUrl: './auth-callback.css',
 })
-export class AuthCallbackComponent implements OnInit {
+export class AuthCallbackComponent implements OnInit, OnDestroy {
   message = 'Signing you in...';
+
+  private sub: Subscription | null = null;
+  private timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
     private router: Router,
-    private supabaseService: SupabaseService
+    private authService: AuthService,
   ) {}
 
-  async ngOnInit(): Promise<void> {
-    const supabase = this.supabaseService.getSupabase();
-    const hash = window.location.hash;
+  ngOnInit(): void {
+    // With PKCE flow + detectSessionInUrl: true, Supabase automatically
+    // detects the code in the URL and exchanges it for a session.
+    // We simply wait for AuthService to report a valid session via
+    // onAuthStateChange (SIGNED_IN event).
+    this.sub = this.authService.session$
+      .pipe(
+        filter((session) => session !== null),
+        take(1),
+      )
+      .subscribe(() => {
+        this.clearTimeoutFn();
+        // Remove the code/state params from the URL so they are not
+        // replayed or leaked via browser history / referrer headers.
+        window.history.replaceState(null, '', window.location.pathname);
+        this.router.navigate(['/dashboard']);
+      });
 
-    if (hash && hash.includes('access_token')) {
-      const params = new URLSearchParams(hash.substring(1));
-      const accessToken = params.get('access_token');
-      const refreshToken = params.get('refresh_token');
+    // Fallback: if no session arrives within 8 seconds, treat as failure.
+    this.timeoutId = setTimeout(() => {
+      this.sub?.unsubscribe();
+      this.sub = null;
 
-      if (accessToken && refreshToken) {
-        const { data, error } = await supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken,
-        });
-
-        if (error) {
-          console.error('Auth callback setSession error:', error.message);
-        } else if (data.session) {
-          window.history.replaceState(null, '', window.location.pathname);
-          this.router.navigate(['/']);
-          return;
-        }
+      if (!environment.production) {
+        console.warn('Auth callback: no session received within timeout.');
       }
-    }
 
-    this.message = 'Sign in failed. Redirecting...';
-    setTimeout(() => this.router.navigate(['/login']), 2000);
+      this.message = 'Sign in failed. Redirecting...';
+      setTimeout(() => this.router.navigate(['/login']), 2000);
+    }, 8000);
+  }
+
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
+    this.clearTimeoutFn();
+  }
+
+  private clearTimeoutFn(): void {
+    if (this.timeoutId !== null) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = null;
+    }
   }
 }
