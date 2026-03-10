@@ -56,12 +56,12 @@ export class UsageService {
     this._loading.next(true);
 
     try {
-      // Get profile
+      // Get profile (maybeSingle in case profile doesn't exist yet)
       const { data: profile } = await this.supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
 
       if (profile) {
         this._profile.next({
@@ -72,20 +72,19 @@ export class UsageService {
         });
       }
 
-      // Get current month's usage
+      // Get current month's usage (maybeSingle returns null if no row exists)
       const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
       const { data: usage } = await this.supabase
         .from('usage')
         .select('request_count')
         .eq('user_id', userId)
         .eq('month', currentMonth)
-        .single();
+        .maybeSingle();
 
       // Get endpoint count
       const { count: endpointCount } = await this.supabase
         .from('endpoints')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', userId);
+        .select('id', { count: 'exact', head: true });
 
       const requestCount = usage?.request_count || 0;
       const requestLimit = profile?.request_limit || 1000;
