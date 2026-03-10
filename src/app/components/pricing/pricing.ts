@@ -32,7 +32,7 @@ export class PricingComponent {
     },
     {
       name: 'Pro',
-      price: '$12',
+      price: '$5',
       period: '/month',
       description: 'For professional frontend teams',
       features: ['Unlimited endpoints', '100,000 requests/month', 'Custom headers & delays', 'Team collaboration', 'Priority support', 'Webhook forwarding'],
