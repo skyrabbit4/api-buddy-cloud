@@ -1,0 +1,12 @@
+[build]
+  command = "npm run build"
+  publish = "dist/api-buddy-cloud/browser"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# SPA fallback — all routes served by index.html so Angular Router works
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
