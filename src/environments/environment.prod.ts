@@ -1,5 +1,7 @@
+// Production config reads from window.__env which is injected at deploy time
+// by Netlify (see netlify.toml build command).
 export const environment = {
   production: true,
-  supabaseUrl: 'https://iqcinepqgduogpkpvbhg.supabase.co',
-  supabaseKey: 'REDACTED_SUPABASE_ANON_KEY'
+  supabaseUrl: (window as any).__env?.SUPABASE_URL || '',
+  supabaseKey: (window as any).__env?.SUPABASE_KEY || '',
 };
