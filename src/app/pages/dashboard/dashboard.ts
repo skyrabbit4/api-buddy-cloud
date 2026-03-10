@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { MockStoreService, MockEndpoint } from '../../services/mock-store.service';
+import { UsageService, UsageStats, UserProfile } from '../../services/usage.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Session } from '@supabase/supabase-js';
@@ -16,14 +17,19 @@ export class DashboardComponent {
   firstName$: Observable<string>;
   endpoints$: Observable<MockEndpoint[]>;
   loading$: Observable<boolean>;
+  usage$: Observable<UsageStats | null>;
+  profile$: Observable<UserProfile | null>;
 
   constructor(
     private authService: AuthService,
     private mockStore: MockStoreService,
+    private usageService: UsageService,
   ) {
     this.session$ = this.authService.session$;
     this.endpoints$ = this.mockStore.endpoints$;
     this.loading$ = this.mockStore.loading$;
+    this.usage$ = this.usageService.usage$;
+    this.profile$ = this.usageService.profile$;
     this.firstName$ = this.session$.pipe(
       map((session) => {
         if (!session?.user) return '';

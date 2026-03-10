@@ -84,6 +84,78 @@
   margin-bottom: 1.5rem;
 }
 
+.usage-card {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 1rem 1.5rem;
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.usage-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.usage-label {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.usage-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.usage-bar {
+  width: 120px;
+  height: 6px;
+  background-color: hsl(var(--secondary));
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 0.25rem;
+}
+
+.usage-fill {
+  height: 100%;
+  background-color: hsl(var(--primary));
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.usage-fill.warning {
+  background-color: hsl(45 90% 55%);
+}
+
+.usage-fill.danger {
+  background-color: hsl(0 72% 55%);
+}
+
+.usage-hint {
+  font-size: 0.7rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.upgrade-link {
+  margin-left: auto;
+  font-size: 0.875rem;
+  color: hsl(var(--primary));
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.upgrade-link:hover {
+  text-decoration: underline;
+}
+
 .dashboard-top {
   display: flex;
   align-items: center;

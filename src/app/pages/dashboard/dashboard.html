@@ -9,15 +9,32 @@
         <span>MockAPI</span>
       </a>
       <div class="header-actions">
-        <span class="plan-badge">Free Plan</span>
+        <span class="plan-badge" *ngIf="profile$ | async as profile">{{ profile.plan | titlecase }} Plan</span>
         <app-profile-menu></app-profile-menu>
       </div>
     </div>
   </header>
 
-  <div class="dashboard-content" *ngIf="{ endpoints: endpoints$ | async, loading: loading$ | async } as ctx">
+  <div class="dashboard-content" *ngIf="{ endpoints: endpoints$ | async, loading: loading$ | async, usage: usage$ | async } as ctx">
     <!-- Greeting -->
     <p class="greeting" *ngIf="firstName$ | async as name">{{ greeting }}, {{ name }}</p>
+
+    <!-- Usage Stats Card -->
+    <div class="usage-card" *ngIf="ctx.usage">
+      <div class="usage-stat">
+        <div class="usage-label">API Requests</div>
+        <div class="usage-value">{{ ctx.usage.requestCount | number }} / {{ ctx.usage.requestLimit | number }}</div>
+        <div class="usage-bar">
+          <div class="usage-fill" [style.width.%]="ctx.usage.usagePercent" [class.warning]="ctx.usage.usagePercent >= 80" [class.danger]="ctx.usage.usagePercent >= 95"></div>
+        </div>
+        <div class="usage-hint">Resets monthly</div>
+      </div>
+      <div class="usage-stat">
+        <div class="usage-label">Endpoints</div>
+        <div class="usage-value">{{ ctx.usage.endpointCount }} / {{ ctx.usage.endpointLimit === -1 ? 'Unlimited' : ctx.usage.endpointLimit }}</div>
+      </div>
+      <a class="upgrade-link" *ngIf="(profile$ | async)?.plan === 'free'">Upgrade to Pro</a>
+    </div>
 
     <!-- Loading state -->
     <div class="loading-state" *ngIf="ctx.loading">
