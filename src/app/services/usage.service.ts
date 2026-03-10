@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { SupabaseService } from './supabase.service';
 import { AuthService } from './auth.service';
@@ -22,10 +22,11 @@ export interface UsageStats {
 @Injectable({
   providedIn: 'root',
 })
-export class UsageService {
+export class UsageService implements OnDestroy {
   private _profile = new BehaviorSubject<UserProfile | null>(null);
   private _usage = new BehaviorSubject<UsageStats | null>(null);
   private _loading = new BehaviorSubject<boolean>(false);
+  private _pollInterval: ReturnType<typeof setInterval> | null = null;
 
   public profile$ = this._profile.asObservable();
   public usage$ = this._usage.asObservable();
@@ -38,11 +39,29 @@ export class UsageService {
     this.authService.session$.subscribe((session) => {
       if (session) {
         this.loadUsage();
+        this.startPolling();
       } else {
         this._profile.next(null);
         this._usage.next(null);
+        this.stopPolling();
       }
     });
+  }
+
+  private startPolling(): void {
+    this.stopPolling();
+    this._pollInterval = setInterval(() => this.loadUsage(), 30_000);
+  }
+
+  private stopPolling(): void {
+    if (this._pollInterval !== null) {
+      clearInterval(this._pollInterval);
+      this._pollInterval = null;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.stopPolling();
   }
 
   private get supabase() {
