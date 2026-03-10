@@ -35,7 +35,7 @@ export class AuthCallbackComponent implements OnInit {
           console.error('Auth callback setSession error:', error.message);
         } else if (data.session) {
           window.history.replaceState(null, '', window.location.pathname);
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/']);
           return;
         }
       }
