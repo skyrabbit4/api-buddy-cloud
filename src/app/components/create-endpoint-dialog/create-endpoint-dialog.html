@@ -1,4 +1,4 @@
-<button class="new-endpoint-btn" (click)="open()">
+<button class="new-endpoint-btn" (click)="open()" [disabled]="disabled" [title]="disabled ? 'Endpoint limit reached. Upgrade to Pro for unlimited endpoints.' : ''">
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="16"

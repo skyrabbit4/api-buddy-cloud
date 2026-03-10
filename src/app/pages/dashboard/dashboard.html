@@ -51,7 +51,7 @@
           </h1>
           <p class="endpoint-count">{{ (ctx.endpoints?.length || 0) }} endpoint{{ (ctx.endpoints?.length || 0) !== 1 ? 's' : '' }} created</p>
         </div>
-        <app-create-endpoint-dialog></app-create-endpoint-dialog>
+        <app-create-endpoint-dialog [disabled]="!!(ctx.usage && ctx.usage.endpointLimit !== -1 && ctx.usage.endpointCount >= ctx.usage.endpointLimit)"></app-create-endpoint-dialog>
       </div>
 
       <!-- Empty state -->
@@ -61,7 +61,7 @@
         </div>
         <h3>No endpoints yet</h3>
         <p>Create your first mock endpoint to start building your frontend without waiting for the backend.</p>
-        <app-create-endpoint-dialog></app-create-endpoint-dialog>
+        <app-create-endpoint-dialog [disabled]="!!(ctx.usage && ctx.usage.endpointLimit !== -1 && ctx.usage.endpointCount >= ctx.usage.endpointLimit)"></app-create-endpoint-dialog>
       </div>
 
       <!-- Endpoint grid -->

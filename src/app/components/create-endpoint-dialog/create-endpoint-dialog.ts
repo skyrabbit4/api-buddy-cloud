@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, EventEmitter, Output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, Input, Output } from '@angular/core';
 import { HttpMethod, MockStoreService } from '../../services/mock-store.service';
 
 @Component({
@@ -9,6 +9,7 @@ import { HttpMethod, MockStoreService } from '../../services/mock-store.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateEndpointDialogComponent {
+  @Input() disabled = false;
   @Output() created = new EventEmitter<void>();
 
   isOpen = false;
@@ -29,6 +30,7 @@ export class CreateEndpointDialogComponent {
   constructor(private mockStore: MockStoreService) {}
 
   open(): void {
+    if (this.disabled) return;
     this.isOpen = true;
   }
 

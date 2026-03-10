@@ -25,6 +25,15 @@
   transform: scale(0.98);
 }
 
+.new-endpoint-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.new-endpoint-btn:disabled:hover {
+  opacity: 0.45;
+}
+
 /* ── Overlay ────────────────────────────────────────────── */
 /*
  * INP FIX: The overlay is ALWAYS in the DOM — we never mount/unmount it.
