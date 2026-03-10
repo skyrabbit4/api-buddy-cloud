@@ -1,10 +1,46 @@
-# robots.txt for MockAPI
+# robots.txt — MockAPI (https://mockapi.dev)
+
+# All crawlers
 User-agent: *
 Allow: /
-
-# Disallow authenticated areas from indexing
+Allow: /login
 Disallow: /dashboard
-Disallow: /auth-callback
+Disallow: /auth/callback
+Disallow: /auth/
+
+# Google
+User-agent: Googlebot
+Allow: /
+Allow: /login
+Disallow: /dashboard
+Disallow: /auth/callback
+Disallow: /auth/
+
+# Google Images
+User-agent: Googlebot-Image
+Allow: /og-image.png
+Allow: /favicon.svg
+Allow: /apple-touch-icon.png
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Allow: /login
+Disallow: /dashboard
+Disallow: /auth/
+
+# Block AI training crawlers
+User-agent: GPTBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
 
 # Sitemap location
 Sitemap: https://mockapi.dev/sitemap.xml

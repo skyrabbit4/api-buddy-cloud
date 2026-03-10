@@ -1,0 +1,51 @@
+{
+  "name": "MockAPI — Mock HTTP Endpoints Instantly",
+  "short_name": "MockAPI",
+  "description": "Create and manage mock HTTP endpoints instantly. Define custom JSON responses, status codes, and delays. Build your frontend without waiting for the backend.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080c14",
+  "theme_color": "#22d3ee",
+  "lang": "en",
+  "scope": "/",
+  "orientation": "any",
+  "categories": ["developer tools", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "label": "MockAPI dashboard — create and manage mock endpoints"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Go to Dashboard",
+      "short_name": "Dashboard",
+      "description": "Open your MockAPI endpoint dashboard",
+      "url": "/dashboard",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Sign In",
+      "short_name": "Sign In",
+      "description": "Sign in to MockAPI",
+      "url": "/login",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    }
+  ]
+}

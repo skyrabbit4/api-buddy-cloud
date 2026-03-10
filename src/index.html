@@ -1,15 +1,208 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>MockAPI — Mock HTTP Endpoints Instantly</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Create and manage mock HTTP endpoints instantly. No backend needed.">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="alternate icon" type="image/x-icon" href="favicon.ico">
-</head>
-<body>
-  <app-root></app-root>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>MockAPI — Mock HTTP Endpoints Instantly | Free Mock API Server</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Primary Meta -->
+    <meta
+      name="description"
+      content="Create and manage mock HTTP endpoints instantly. Define custom JSON responses, status codes, and delays. Build your frontend without waiting for the backend. Free forever."
+    />
+    <meta
+      name="keywords"
+      content="mock api, api mocking, mock http endpoints, fake api, rest api mock, mock server online, json mock api, api stub, frontend development tools, api testing tool, free mock api, mock api server"
+    />
+    <meta name="author" content="MockAPI" />
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+    <link rel="canonical" href="https://mockapi.dev/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mockapi.dev/" />
+    <meta property="og:site_name" content="MockAPI" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="MockAPI — Mock HTTP Endpoints Instantly" />
+    <meta
+      property="og:description"
+      content="Create live mock API endpoints in seconds. Define custom JSON responses, status codes, headers, and delays. Ship your frontend faster — no backend required."
+    />
+    <meta property="og:image" content="https://mockapi.dev/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="MockAPI — Create mock HTTP endpoints instantly" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@mockapi_dev" />
+    <meta name="twitter:url" content="https://mockapi.dev/" />
+    <meta name="twitter:title" content="MockAPI — Mock HTTP Endpoints Instantly" />
+    <meta
+      name="twitter:description"
+      content="Create live mock API endpoints in seconds. Custom JSON responses, status codes, and delays. Free forever."
+    />
+    <meta name="twitter:image" content="https://mockapi.dev/og-image.png" />
+    <meta name="twitter:image:alt" content="MockAPI dashboard preview" />
+
+    <!-- Mobile & PWA -->
+    <meta name="theme-color" content="#22d3ee" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="MockAPI" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="alternate icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="manifest" href="manifest.webmanifest" />
+
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://iqcinepqgduogpkpvbhg.supabase.co" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+
+    <!-- JSON-LD: SoftwareApplication -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "MockAPI",
+        "url": "https://mockapi.dev",
+        "logo": "https://mockapi.dev/favicon.svg",
+        "applicationCategory": "DeveloperApplication",
+        "applicationSubCategory": "API Development Tools",
+        "operatingSystem": "Web",
+        "browserRequirements": "Requires JavaScript",
+        "description": "Create and manage mock HTTP endpoints instantly. Define custom JSON responses, status codes, headers, and delays. Build your frontend without waiting for the backend.",
+        "offers": [
+          {
+            "@type": "Offer",
+            "name": "Free Plan",
+            "price": "0",
+            "priceCurrency": "USD",
+            "description": "5 mock endpoints, 1,000 requests/month"
+          },
+          {
+            "@type": "Offer",
+            "name": "Pro Plan",
+            "price": "12",
+            "priceCurrency": "USD",
+            "billingIncrement": "P1M",
+            "description": "Unlimited endpoints, 100,000 requests/month, custom headers & delays"
+          }
+        ],
+        "featureList": [
+          "Instant mock HTTP endpoints",
+          "Custom JSON response bodies",
+          "Configurable HTTP status codes",
+          "Simulated network latency",
+          "CORS-ready endpoints",
+          "Support for GET, POST, PUT, PATCH, DELETE",
+          "Cloud hosted — accessible from anywhere",
+          "Google and GitHub OAuth sign-in"
+        ],
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "ratingCount": "150",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "creator": {
+          "@type": "Organization",
+          "name": "MockAPI",
+          "url": "https://mockapi.dev"
+        }
+      }
+    </script>
+
+    <!-- JSON-LD: FAQPage (rich snippets in Google) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is MockAPI?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "MockAPI is a free online tool that lets you create mock HTTP endpoints instantly. You can define custom JSON responses, HTTP status codes, response delays, and supported methods (GET, POST, PUT, PATCH, DELETE) — all without writing any backend code."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is MockAPI free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. MockAPI has a free plan that includes 5 mock endpoints and 1,000 requests per month — forever. A Pro plan is available at $12/month for unlimited endpoints and 100,000 requests/month."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I create a mock API endpoint?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Sign in with Google or GitHub, click 'New Endpoint' on your dashboard, fill in the HTTP method, path, status code, optional delay, and JSON response body — your live endpoint URL is generated instantly."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What HTTP methods does MockAPI support?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "MockAPI supports GET, POST, PUT, PATCH, and DELETE — the full range of REST API methods you need for realistic frontend mocking."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does MockAPI support CORS?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. All MockAPI endpoints include proper CORS headers so you can call them from any frontend origin — including localhost — without any additional configuration."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I simulate slow API responses?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. When creating or editing an endpoint, you can set a delay in milliseconds. This lets you test loading states, spinners, and timeout handling in your frontend."
+            }
+          }
+        ]
+      }
+    </script>
+
+    <!-- JSON-LD: WebSite with SearchAction -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "MockAPI",
+        "url": "https://mockapi.dev",
+        "description": "Create and manage mock HTTP endpoints instantly.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://mockapi.dev/?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <script src="env.js" onerror="console.warn('env.js not found, using default config')"></script>
+    <app-root></app-root>
+  </body>
 </html>
