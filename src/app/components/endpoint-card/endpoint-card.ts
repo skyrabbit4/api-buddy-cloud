@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, Input, Output } from '@angular/core';
 import { MockEndpoint, MockStoreService } from '../../services/mock-store.service';
 
 @Component({
@@ -6,6 +6,7 @@ import { MockEndpoint, MockStoreService } from '../../services/mock-store.servic
   standalone: false,
   templateUrl: './endpoint-card.html',
   styleUrl: './endpoint-card.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EndpointCardComponent {
   @Input() endpoint!: MockEndpoint;

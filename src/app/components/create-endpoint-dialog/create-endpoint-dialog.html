@@ -1,48 +1,101 @@
 <button class="new-endpoint-btn" (click)="open()">
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M5 12h14" />
+    <path d="M12 5v14" />
+  </svg>
   New Endpoint
 </button>
 
-<div class="dialog-overlay" *ngIf="isOpen" (click)="close()">
-  <div class="dialog-content" (click)="$event.stopPropagation()">
+<div
+  class="dialog-overlay"
+  [class.is-open]="isOpen"
+  (click)="close()"
+  aria-modal="true"
+  [attr.aria-hidden]="!isOpen"
+>
+  <div
+    class="dialog-content"
+    (click)="$event.stopPropagation()"
+    role="dialog"
+    aria-labelledby="dialog-title"
+  >
     <div class="dialog-header">
-      <h2>Create Mock Endpoint</h2>
-      <button class="close-btn" (click)="close()">✕</button>
+      <h2 id="dialog-title">Create Mock Endpoint</h2>
+      <button class="close-btn" (click)="close()" aria-label="Close dialog">✕</button>
     </div>
 
     <div class="dialog-body">
-      <div class="error-message" *ngIf="error">{{ error }}</div>
+      <div class="error-message" *ngIf="error" role="alert">{{ error }}</div>
 
       <div class="form-group">
         <label for="name">Name</label>
-        <input id="name" type="text" placeholder="Get all users" [(ngModel)]="name" required>
+        <input
+          id="name"
+          type="text"
+          placeholder="Get all users"
+          [(ngModel)]="name"
+          required
+          autocomplete="off"
+        />
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label>Method</label>
-          <select [(ngModel)]="method" required>
+          <label for="method">Method</label>
+          <select id="method" [(ngModel)]="method" required>
             <option *ngFor="let m of methods" [value]="m">{{ m }}</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Status Code</label>
-          <input type="number" [(ngModel)]="statusCode" min="100" max="599" required>
+          <label for="status-code">Status Code</label>
+          <input
+            id="status-code"
+            type="number"
+            [(ngModel)]="statusCode"
+            min="100"
+            max="599"
+            required
+          />
         </div>
         <div class="form-group">
-          <label>Delay (ms)</label>
-          <input type="number" [(ngModel)]="delay" min="0" max="30000">
+          <label for="delay">Delay (ms)</label>
+          <input id="delay" type="number" [(ngModel)]="delay" min="0" max="30000" />
         </div>
       </div>
 
       <div class="form-group">
         <label for="path">Path</label>
-        <input id="path" type="text" placeholder="/api/v1/users" [(ngModel)]="path" class="mono" required pattern="^/.*">
+        <input
+          id="path"
+          type="text"
+          placeholder="/api/v1/users"
+          [(ngModel)]="path"
+          class="mono"
+          required
+          pattern="^/.*"
+          autocomplete="off"
+        />
       </div>
 
       <div class="form-group">
         <label for="response">Response Body (JSON)</label>
-        <textarea id="response" [(ngModel)]="responseBody" rows="8" class="mono"></textarea>
+        <textarea
+          id="response"
+          [(ngModel)]="responseBody"
+          rows="8"
+          class="mono"
+          spellcheck="false"
+        ></textarea>
       </div>
 
       <button class="create-btn" (click)="create()">Create Endpoint</button>

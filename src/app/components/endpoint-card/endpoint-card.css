@@ -3,11 +3,13 @@
   border: 1px solid hsl(var(--border));
   background-color: hsl(var(--card));
   padding: 1rem;
-  transition: all 0.2s;
+  /* Avoid `transition: all` — it forces the browser to check every
+     animatable property on every frame. Only animate what changes. */
+  transition: border-color 0.2s ease;
 }
 
 .endpoint-card:hover {
-  border-color: hsl(var(--primary) / 0.2);
+  border-color: hsl(var(--primary) / 0.35);
 }
 
 .card-top {
@@ -81,7 +83,8 @@
   cursor: pointer;
   inset: 0;
   background-color: hsl(var(--secondary));
-  transition: 0.3s;
+  /* Only animate background-color — avoids checking all properties */
+  transition: background-color 0.2s ease;
   border-radius: 24px;
 }
 
@@ -93,7 +96,10 @@
   left: 3px;
   bottom: 3px;
   background-color: hsl(var(--foreground));
-  transition: 0.3s;
+  /* transform is compositor-accelerated — safe and cheap to animate */
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
   border-radius: 50%;
 }
 
@@ -135,6 +141,7 @@ input:checked + .slider:before {
   padding: 0.25rem;
   display: flex;
   align-items: center;
+  transition: color 0.15s ease;
 }
 
 .icon-btn:hover {
@@ -152,7 +159,8 @@ input:checked + .slider:before {
 .card-actions {
   margin-top: 0.75rem;
   opacity: 0;
-  transition: opacity 0.2s;
+  /* Specific property only — cheaper than `transition: all` */
+  transition: opacity 0.15s ease;
 }
 
 .endpoint-card:hover .card-actions {
@@ -160,7 +168,7 @@ input:checked + .slider:before {
 }
 
 .delete-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.25rem;
   background: none;
@@ -170,6 +178,7 @@ input:checked + .slider:before {
   cursor: pointer;
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
+  transition: background-color 0.15s ease;
 }
 
 .delete-btn:hover {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 interface Feature {
   icon: string;
@@ -11,6 +11,7 @@ interface Feature {
   standalone: false,
   templateUrl: './features.html',
   styleUrl: './features.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FeaturesComponent {
   features: Feature[] = [
@@ -22,17 +23,20 @@ export class FeaturesComponent {
     {
       icon: 'code',
       title: 'Custom Responses',
-      description: 'Define JSON responses, status codes, headers, and delays for realistic mocking.',
+      description:
+        'Define JSON responses, status codes, headers, and delays for realistic mocking.',
     },
     {
       icon: 'globe',
       title: 'Cloud Hosted',
-      description: 'Your mock endpoints are live and accessible from anywhere. Share with your team.',
+      description:
+        'Your mock endpoints are live and accessible from anywhere. Share with your team.',
     },
     {
       icon: 'clock',
       title: 'Simulated Latency',
-      description: 'Add realistic delays to test loading states and error handling in your frontend.',
+      description:
+        'Add realistic delays to test loading states and error handling in your frontend.',
     },
     {
       icon: 'shield',

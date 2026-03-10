@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 interface Step {
   step: string;
@@ -12,6 +12,7 @@ interface Step {
   standalone: false,
   templateUrl: './how-it-works.html',
   styleUrl: './how-it-works.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HowItWorksComponent {
   steps: Step[] = [

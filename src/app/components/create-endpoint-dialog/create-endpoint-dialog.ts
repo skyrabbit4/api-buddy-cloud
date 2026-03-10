@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, Output } from '@angular/core';
 import { HttpMethod, MockStoreService } from '../../services/mock-store.service';
 
 @Component({
@@ -6,6 +6,7 @@ import { HttpMethod, MockStoreService } from '../../services/mock-store.service'
   standalone: false,
   templateUrl: './create-endpoint-dialog.html',
   styleUrl: './create-endpoint-dialog.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateEndpointDialogComponent {
   @Output() created = new EventEmitter<void>();
