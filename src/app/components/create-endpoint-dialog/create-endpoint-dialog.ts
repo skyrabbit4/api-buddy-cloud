@@ -38,7 +38,7 @@ export class CreateEndpointDialogComponent {
     this.resetForm();
   }
 
-  create(): void {
+  async create(): Promise<void> {
     if (!this.name.trim() || !this.path.trim()) {
       this.error = 'Name and path are required';
       return;
@@ -66,7 +66,7 @@ export class CreateEndpointDialogComponent {
       return;
     }
 
-    this.mockStore.addEndpoint({
+    const result = await this.mockStore.addEndpoint({
       name: this.name,
       method: this.method,
       path: this.path,
@@ -75,10 +75,14 @@ export class CreateEndpointDialogComponent {
       delay: this.delay,
     });
 
-    this.created.emit();
-    this.isOpen = false;
-    this.error = null;
-    this.resetForm();
+    if (result) {
+      this.created.emit();
+      this.isOpen = false;
+      this.error = null;
+      this.resetForm();
+    } else {
+      this.error = 'Failed to create endpoint. Please try again.';
+    }
   }
 
   private resetForm(): void {

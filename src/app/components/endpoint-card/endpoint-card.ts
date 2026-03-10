@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { MockEndpoint, MockStoreService } from '../../services/mock-store.service';
 
 @Component({
@@ -10,7 +10,6 @@ import { MockEndpoint, MockStoreService } from '../../services/mock-store.servic
 })
 export class EndpointCardComponent {
   @Input() endpoint!: MockEndpoint;
-  @Output() refresh = new EventEmitter<void>();
 
   urlCopied = false;
 
@@ -33,7 +32,7 @@ export class EndpointCardComponent {
   constructor(private mockStore: MockStoreService) {}
 
   get mockUrl(): string {
-    return `https://mockapi.dev/m/${this.endpoint.id}`;
+    return `${window.location.origin}/m/${this.endpoint.id}`;
   }
 
   get methodColor(): string {
@@ -51,13 +50,11 @@ export class EndpointCardComponent {
     });
   }
 
-  deleteEndpoint(): void {
-    this.mockStore.deleteEndpoint(this.endpoint.id);
-    this.refresh.emit();
+  async deleteEndpoint(): Promise<void> {
+    await this.mockStore.deleteEndpoint(this.endpoint.id);
   }
 
-  toggleEndpoint(): void {
-    this.mockStore.toggleEndpoint(this.endpoint.id);
-    this.refresh.emit();
+  async toggleEndpoint(): Promise<void> {
+    await this.mockStore.toggleEndpoint(this.endpoint.id);
   }
 }

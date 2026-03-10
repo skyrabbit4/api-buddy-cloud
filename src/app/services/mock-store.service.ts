@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { SupabaseService } from './supabase.service';
 import { AuthService } from './auth.service';
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
@@ -15,79 +17,224 @@ export interface MockEndpoint {
   isActive: boolean;
 }
 
+interface DbEndpoint {
+  id: string;
+  user_id: string;
+  name: string;
+  method: string;
+  path: string;
+  status_code: number;
+  response_body: string;
+  delay: number;
+  is_active: boolean;
+  created_at: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class MockStoreService {
-  private readonly STORAGE_KEY = 'mockapi_endpoints';
-  private cache: MockEndpoint[] | null = null;
+  private _endpoints = new BehaviorSubject<MockEndpoint[]>([]);
+  private _loading = new BehaviorSubject<boolean>(false);
+  private _error = new BehaviorSubject<string | null>(null);
 
-  constructor(private authService: AuthService) {
-    // Reset the in-memory cache whenever the auth state changes
-    // (login, logout, token refresh) so a new user never sees
-    // a previous user's endpoints.
-    this.authService.session$.subscribe(() => {
-      this.cache = null;
+  public endpoints$ = this._endpoints.asObservable();
+  public loading$ = this._loading.asObservable();
+  public error$ = this._error.asObservable();
+
+  constructor(
+    private supabaseService: SupabaseService,
+    private authService: AuthService,
+  ) {
+    // Reload endpoints when auth state changes
+    this.authService.session$.subscribe((session) => {
+      if (session) {
+        this.loadEndpoints();
+      } else {
+        this._endpoints.next([]);
+      }
     });
   }
 
-  private getStorageKey(): string {
-    const userId = this.authService.currentSession?.user?.id;
-    return userId ? `${this.STORAGE_KEY}_${userId}` : this.STORAGE_KEY;
+  private get supabase() {
+    return this.supabaseService.getSupabase();
   }
 
-  private generateId(): string {
-    return crypto.randomUUID();
+  private mapDbToEndpoint(db: DbEndpoint): MockEndpoint {
+    return {
+      id: db.id,
+      name: db.name,
+      method: db.method as HttpMethod,
+      path: db.path,
+      statusCode: db.status_code,
+      responseBody: typeof db.response_body === 'string'
+        ? db.response_body
+        : JSON.stringify(db.response_body, null, 2),
+      delay: db.delay,
+      createdAt: db.created_at,
+      isActive: db.is_active,
+    };
+  }
+
+  async loadEndpoints(): Promise<void> {
+    this._loading.next(true);
+    this._error.next(null);
+
+    try {
+      const { data, error } = await this.supabase
+        .from('endpoints')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const endpoints = (data || []).map((d: DbEndpoint) => this.mapDbToEndpoint(d));
+      this._endpoints.next(endpoints);
+    } catch (err) {
+      console.error('Failed to load endpoints:', err);
+      this._error.next('Failed to load endpoints');
+    } finally {
+      this._loading.next(false);
+    }
   }
 
   getEndpoints(): MockEndpoint[] {
-    if (this.cache) return this.cache;
-    try {
-      const data = localStorage.getItem(this.getStorageKey());
-      this.cache = data ? JSON.parse(data) : [];
-      return this.cache ?? [];
-    } catch {
-      console.warn('Failed to read from localStorage');
-      return [];
-    }
+    return this._endpoints.getValue();
   }
 
-  private saveEndpoints(endpoints: MockEndpoint[]): void {
+  async addEndpoint(
+    endpoint: Omit<MockEndpoint, 'id' | 'createdAt' | 'isActive'>,
+  ): Promise<MockEndpoint | null> {
+    const userId = this.authService.currentSession?.user?.id;
+    if (!userId) {
+      this._error.next('Not authenticated');
+      return null;
+    }
+
+    this._loading.next(true);
+    this._error.next(null);
+
     try {
-      localStorage.setItem(this.getStorageKey(), JSON.stringify(endpoints));
-      this.cache = endpoints;
+      // Parse responseBody to ensure it's valid JSON for storage
+      let responseBodyJson: unknown;
+      try {
+        responseBodyJson = JSON.parse(endpoint.responseBody);
+      } catch {
+        // If not valid JSON, store as string
+        responseBodyJson = endpoint.responseBody;
+      }
+
+      const { data, error } = await this.supabase
+        .from('endpoints')
+        .insert({
+          user_id: userId,
+          name: endpoint.name,
+          method: endpoint.method,
+          path: endpoint.path,
+          status_code: endpoint.statusCode,
+          response_body: responseBodyJson,
+          delay: endpoint.delay,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      const newEndpoint = this.mapDbToEndpoint(data);
+      this._endpoints.next([newEndpoint, ...this._endpoints.getValue()]);
+      return newEndpoint;
     } catch (err) {
-      console.error('Failed to save to localStorage:', err);
+      console.error('Failed to create endpoint:', err);
+      this._error.next('Failed to create endpoint');
+      return null;
+    } finally {
+      this._loading.next(false);
     }
   }
 
-  addEndpoint(endpoint: Omit<MockEndpoint, 'id' | 'createdAt' | 'isActive'>): MockEndpoint {
-    const newEndpoint: MockEndpoint = {
-      ...endpoint,
-      id: this.generateId(),
-      createdAt: new Date().toISOString(),
-      isActive: true,
-    };
-    const endpoints = this.getEndpoints();
-    endpoints.push(newEndpoint);
-    this.saveEndpoints(endpoints);
-    return newEndpoint;
+  async deleteEndpoint(id: string): Promise<void> {
+    this._error.next(null);
+
+    try {
+      const { error } = await this.supabase
+        .from('endpoints')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      this._endpoints.next(this._endpoints.getValue().filter((e) => e.id !== id));
+    } catch (err) {
+      console.error('Failed to delete endpoint:', err);
+      this._error.next('Failed to delete endpoint');
+    }
   }
 
-  deleteEndpoint(id: string): void {
-    const endpoints = this.getEndpoints().filter((e) => e.id !== id);
-    this.saveEndpoints(endpoints);
+  async toggleEndpoint(id: string): Promise<void> {
+    this._error.next(null);
+    const endpoint = this._endpoints.getValue().find((e) => e.id === id);
+    if (!endpoint) return;
+
+    try {
+      const { error } = await this.supabase
+        .from('endpoints')
+        .update({ is_active: !endpoint.isActive })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      this._endpoints.next(
+        this._endpoints.getValue().map((e) =>
+          e.id === id ? { ...e, isActive: !e.isActive } : e,
+        ),
+      );
+    } catch (err) {
+      console.error('Failed to toggle endpoint:', err);
+      this._error.next('Failed to toggle endpoint');
+    }
   }
 
-  toggleEndpoint(id: string): void {
-    const endpoints = this.getEndpoints().map((e) =>
-      e.id === id ? { ...e, isActive: !e.isActive } : e,
-    );
-    this.saveEndpoints(endpoints);
-  }
+  async updateEndpoint(id: string, updates: Partial<MockEndpoint>): Promise<void> {
+    this._error.next(null);
 
-  updateEndpoint(id: string, updates: Partial<MockEndpoint>): void {
-    const endpoints = this.getEndpoints().map((e) => (e.id === id ? { ...e, ...updates } : e));
-    this.saveEndpoints(endpoints);
+    try {
+      const dbUpdates: Partial<{
+        name: string;
+        method: string;
+        path: string;
+        status_code: number;
+        delay: number;
+        is_active: boolean;
+        response_body: unknown;
+      }> = {};
+
+      if (updates.name !== undefined) dbUpdates.name = updates.name;
+      if (updates.method !== undefined) dbUpdates.method = updates.method;
+      if (updates.path !== undefined) dbUpdates.path = updates.path;
+      if (updates.statusCode !== undefined) dbUpdates.status_code = updates.statusCode;
+      if (updates.delay !== undefined) dbUpdates.delay = updates.delay;
+      if (updates.isActive !== undefined) dbUpdates.is_active = updates.isActive;
+      if (updates.responseBody !== undefined) {
+        try {
+          dbUpdates.response_body = JSON.parse(updates.responseBody);
+        } catch {
+          dbUpdates.response_body = updates.responseBody;
+        }
+      }
+
+      const { error } = await this.supabase
+        .from('endpoints')
+        .update(dbUpdates)
+        .eq('id', id);
+
+      if (error) throw error;
+
+      this._endpoints.next(
+        this._endpoints.getValue().map((e) => (e.id === id ? { ...e, ...updates } : e)),
+      );
+    } catch (err) {
+      console.error('Failed to update endpoint:', err);
+      this._error.next('Failed to update endpoint');
+    }
   }
 }

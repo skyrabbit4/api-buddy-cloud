@@ -5,6 +5,16 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Netlify Functions configuration
+[functions]
+  directory = "netlify/functions"
+
+# Mock API endpoint — route to Netlify Function (must come BEFORE SPA fallback)
+[[redirects]]
+  from = "/m/*"
+  to = "/.netlify/functions/mock"
+  status = 200
+
 # SPA fallback — all routes served by index.html so Angular Router works
 [[redirects]]
   from = "/*"

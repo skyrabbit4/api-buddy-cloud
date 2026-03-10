@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { MockStoreService, MockEndpoint } from '../../services/mock-store.service';
 import { Observable } from 'rxjs';
@@ -11,16 +11,19 @@ import { Session } from '@supabase/supabase-js';
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
   session$: Observable<Session | null>;
   firstName$: Observable<string>;
-  endpoints: MockEndpoint[] = [];
+  endpoints$: Observable<MockEndpoint[]>;
+  loading$: Observable<boolean>;
 
   constructor(
     private authService: AuthService,
     private mockStore: MockStoreService,
   ) {
     this.session$ = this.authService.session$;
+    this.endpoints$ = this.mockStore.endpoints$;
+    this.loading$ = this.mockStore.loading$;
     this.firstName$ = this.session$.pipe(
       map((session) => {
         if (!session?.user) return '';
@@ -37,14 +40,6 @@ export class DashboardComponent implements OnInit {
     if (hour < 12) return 'Good morning';
     if (hour < 18) return 'Good afternoon';
     return 'Good evening';
-  }
-
-  ngOnInit(): void {
-    this.refresh();
-  }
-
-  refresh(): void {
-    this.endpoints = this.mockStore.getEndpoints();
   }
 
   trackByEndpointId(_index: number, endpoint: MockEndpoint): string {
