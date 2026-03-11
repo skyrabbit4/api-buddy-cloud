@@ -57,6 +57,8 @@
   text-decoration: none;
   transition: color 0.2s;
   padding-block: 0.875rem;
+  min-width: 48px;
+  text-align: center;
 }
 
 .nav-links a:hover {

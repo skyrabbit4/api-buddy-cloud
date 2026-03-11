@@ -28,6 +28,11 @@ export class SupabaseService {
         detectSessionInUrl: true,
         autoRefreshToken: true,
         persistSession: true,
+        // Use a no-op lock function to avoid Navigator.locks conflicts when the
+        // scanner or multiple tabs try to acquire the same exclusive lock.
+        // Supabase serialises auth operations with Web Locks by default; for a
+        // public SPA the storage-based fallback is sufficient.
+        lock: async (_name, _acquireTimeout, fn) => fn(),
       },
     });
     (window as any)[WINDOW_KEY] = this.supabase;
