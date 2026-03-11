@@ -42,13 +42,14 @@
 
     # Content Security Policy
     # - default-src: fallback — only allow same origin
-    # - script-src: allow self + inline scripts Angular needs
-    # - style-src: allow self + Google Fonts + inline styles (Angular)
+    # - script-src: 'self' only — Angular production build uses no executable inline scripts;
+    #               JSON-LD schemas use type="application/ld+json" (data block, not executable)
+    # - style-src: allow self + Google Fonts + inline styles (Angular component styles)
     # - font-src: allow Google Fonts
     # - img-src: allow self, data URIs, and any HTTPS source (for OAuth avatars)
     # - connect-src: allow self + Supabase API
     # - frame-ancestors: block all iframes (mirrors X-Frame-Options)
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none';"
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none';"
 
 # Cache hashed JS/CSS bundles for 1 year (they have content hash in filename)
 [[headers]]
