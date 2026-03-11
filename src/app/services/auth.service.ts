@@ -8,7 +8,7 @@ import { SupabaseService } from './supabase.service';
   providedIn: 'root',
 })
 export class AuthService {
-  private supabase: SupabaseClient;
+  private supabase: SupabaseClient | null;
   private _session = new BehaviorSubject<Session | null>(null);
   private _isLoaded = new BehaviorSubject<boolean>(false);
 
@@ -24,6 +24,12 @@ export class AuthService {
     private supabaseService: SupabaseService,
   ) {
     this.supabase = this.supabaseService.getSupabase();
+
+    if (!this.supabase) {
+      // SSR: no browser context — mark as loaded with null session so UI renders correctly.
+      this._isLoaded.next(true);
+      return;
+    }
 
     // onAuthStateChange handles everything:
     // - INITIAL_SESSION: fires on first load with existing session (or null)
@@ -41,7 +47,7 @@ export class AuthService {
   }
 
   async signInWithGoogle(): Promise<void> {
-    const { error } = await this.supabase.auth.signInWithOAuth({
+    const { error } = await this.supabase!.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: window.location.origin + '/auth/callback' },
     });
@@ -49,7 +55,7 @@ export class AuthService {
   }
 
   async signInWithGitHub(): Promise<void> {
-    const { error } = await this.supabase.auth.signInWithOAuth({
+    const { error } = await this.supabase!.auth.signInWithOAuth({
       provider: 'github',
       options: { redirectTo: window.location.origin + '/auth/callback' },
     });
@@ -57,6 +63,6 @@ export class AuthService {
   }
 
   async signOut(): Promise<void> {
-    await this.supabase.auth.signOut();
+    await this.supabase!.auth.signOut();
   }
 }

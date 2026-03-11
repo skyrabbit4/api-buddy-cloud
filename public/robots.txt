@@ -1,4 +1,4 @@
-# robots.txt — MockAPI (https://mockapi.dev)
+# robots.txt — MockAPI (https://mockapi.store)
 
 # All crawlers
 User-agent: *
@@ -43,4 +43,4 @@ User-agent: anthropic-ai
 Disallow: /
 
 # Sitemap location
-Sitemap: https://mockapi.dev/sitemap.xml
+Sitemap: https://mockapi.store/sitemap.xml

@@ -57,7 +57,7 @@ export class MockStoreService {
   }
 
   private get supabase() {
-    return this.supabaseService.getSupabase();
+    return this.supabaseService.getSupabase()!;
   }
 
   private mapDbToEndpoint(db: DbEndpoint): MockEndpoint {

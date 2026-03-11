@@ -176,6 +176,11 @@
   cursor: pointer;
   padding: 0.25rem;
   transition: color 0.2s;
+  min-width: 48px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .copy-btn:hover {

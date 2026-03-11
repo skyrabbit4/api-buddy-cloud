@@ -65,7 +65,7 @@ export class UsageService implements OnDestroy {
   }
 
   private get supabase() {
-    return this.supabaseService.getSupabase();
+    return this.supabaseService.getSupabase()!;
   }
 
   async loadUsage(): Promise<void> {

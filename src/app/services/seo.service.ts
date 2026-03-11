@@ -13,12 +13,12 @@ interface SeoConfig {
   noIndex?: boolean;
 }
 
-const BASE_URL = 'https://mockapi.dev';
+const BASE_URL = 'https://mockapi.store';
 
 const DEFAULT_CONFIG: SeoConfig = {
-  title: 'MockAPI — Mock HTTP Endpoints Instantly | Free Mock API Server',
+  title: 'MockAPI — Mock HTTP Endpoints Instantly',
   description:
-    'Create and manage mock HTTP endpoints instantly. Define custom JSON responses, status codes, and delays. Build your frontend without waiting for the backend. Free forever.',
+    'Create and manage mock HTTP endpoints instantly. Custom JSON responses, status codes, and delays. Build your frontend without waiting for the backend.',
   keywords:
     'mock api, api mocking, mock http endpoints, fake api, rest api mock, mock server online, json mock api, api stub, frontend development tools, api testing tool, free mock api, mock api server, http mock server, api simulator',
   ogImage: `${BASE_URL}/og-image.png`,

@@ -2,10 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   NgZone,
   OnDestroy,
   OnInit,
+  PLATFORM_ID,
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 const SCROLL_TOP_THRESHOLD = 400;
 
@@ -24,9 +27,12 @@ export class IndexComponent implements OnInit, OnDestroy {
   constructor(
     private ngZone: NgZone,
     private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) private platformId: object,
   ) {}
 
   ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     // Run the scroll handler OUTSIDE Angular's zone so it does NOT trigger
     // change detection on every pixel scrolled — a major INP / jank source.
     // We only call markForCheck() when the boolean actually flips, making
@@ -48,6 +54,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     window.removeEventListener('scroll', this.scrollListener);
   }
 

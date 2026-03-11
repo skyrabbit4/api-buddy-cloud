@@ -25,6 +25,7 @@
   gap: 0.5rem;
   text-decoration: none;
   color: hsl(var(--foreground));
+  min-height: 48px;
 }
 
 .nav-icon {
@@ -55,6 +56,7 @@
   color: hsl(var(--muted-foreground));
   text-decoration: none;
   transition: color 0.2s;
+  padding-block: 0.875rem;
 }
 
 .nav-links a:hover {
@@ -78,6 +80,7 @@
   text-decoration: none;
   transition: all 0.2s;
   border: none;
+  min-height: 48px;
 }
 
 .nav-btn-ghost {

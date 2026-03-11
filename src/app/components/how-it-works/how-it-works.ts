@@ -32,7 +32,7 @@ export class HowItWorksComponent {
       step: '03',
       title: 'Use your live URL',
       description: 'Copy the endpoint URL and start fetching in your app immediately.',
-      code: 'const res = await fetch(\n  "https://mockapi.dev/m/abc123"\n);',
+      code: 'const res = await fetch(\n  "https://mockapi.store/m/abc123"\n);',
     },
   ];
 }

@@ -4,18 +4,18 @@
   xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
 >
   <url>
-    <loc>https://mockapi.dev/</loc>
+    <loc>https://mockapi.store/</loc>
     <lastmod>2025-01-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://mockapi.dev/og-image.png</image:loc>
+      <image:loc>https://mockapi.store/og-image.png</image:loc>
       <image:title>MockAPI — Mock HTTP Endpoints Instantly</image:title>
       <image:caption>Create and manage mock HTTP endpoints instantly. Free forever.</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://mockapi.dev/login</loc>
+    <loc>https://mockapi.store/login</loc>
     <lastmod>2025-01-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
