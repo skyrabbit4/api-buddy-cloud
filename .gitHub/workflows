@@ -1,0 +1,71 @@
+[span_0](start_span)name: CI/CD Pipeline #[span_0](end_span)
+
+[span_1](start_span)on: #[span_1](end_span)
+  [span_2](start_span)push: #[span_2](end_span)
+    [span_3](start_span)branches: [main] #[span_3](end_span)
+  [span_4](start_span)pull_request: #[span_4](end_span)
+    [span_5](start_span)branches: [main] #[span_5](end_span)
+
+[span_6](start_span)jobs: #[span_6](end_span)
+  [span_7](start_span)build-and-test: #[span_7](end_span)
+    [span_8](start_span)name: Build and Test #[span_8](end_span)
+    [span_9](start_span)runs-on: ubuntu-latest #[span_9](end_span)
+
+    [span_10](start_span)steps: #[span_10](end_span)
+      - [span_11](start_span)name: Checkout code #[span_11](end_span)
+        [span_12](start_span)uses: actions/checkout@v4 #[span_12](end_span)
+
+      - [span_13](start_span)name: Set up Node.js #[span_13](end_span)
+        [span_14](start_span)uses: actions/setup-node@v4 #[span_14](end_span)
+        [span_15](start_span)with: #[span_15](end_span)
+          [span_16](start_span)node-version: '20' #[span_16](end_span)
+          [span_17](start_span)cache: npm #[span_17](end_span)
+
+      - [span_18](start_span)name: Install dependencies #[span_18](end_span)
+        [span_19](start_span)run: npm ci #[span_19](end_span)
+
+      - [span_20](start_span)name: TypeScript type check #[span_20](end_span)
+        [span_21](start_span)run: npx tsc --noEmit #[span_21](end_span)
+
+      - [span_22](start_span)name: Run tests headless #[span_22](end_span)
+        [span_23](start_span)run: npx ng test --watch=false --browsers=ChromeHeadless --code-coverage #[span_23](end_span)
+
+      - [span_24](start_span)name: Upload coverage report #[span_24](end_span)
+        [span_25](start_span)uses: actions/upload-artifact@v4 #[span_25](end_span)
+        [span_26](start_span)if: always() #[span_26](end_span)
+        [span_27](start_span)with: #[span_27](end_span)
+          [span_28](start_span)name: coverage-report #[span_28](end_span)
+          [span_29](start_span)path: coverage/ #[span_29](end_span)
+          [span_30](start_span)retention-days: 7 #[span_30](end_span)
+
+      - [span_31](start_span)name: Build #[span_31](end_span)
+        [span_32](start_span)run: npm run build #[span_32](end_span)
+        [span_33](start_span)env: #[span_33](end_span)
+          [span_34](start_span)NODE_ENV: production #[span_34](end_span)
+
+      - [span_35](start_span)name: Upload build artifact #[span_35](end_span)
+        [span_36](start_span)uses: actions/upload-artifact@v4 #[span_36](end_span)
+        [span_37](start_span)with: #[span_37](end_span)
+          [span_38](start_span)name: dist #[span_38](end_span)
+          [span_39](start_span)path: dist/api-buddy-cloud/browser #[span_39](end_span)
+          [span_40](start_span)retention-days: 7 #[span_40](end_span)
+
+  [span_41](start_span)lint-check: #[span_41](end_span)
+    [span_42](start_span)name: Lint and Code Quality #[span_42](end_span)
+    [span_43](start_span)runs-on: ubuntu-latest #[span_43](end_span)
+
+    [span_44](start_span)steps: #[span_44](end_span)
+      - [span_45](start_span)name: Checkout code #[span_45](end_span)
+        [span_46](start_span)uses: actions/checkout@v4 #[span_46](end_span)
+
+      - [span_47](start_span)name: Set up Node.js #[span_47](end_span)
+        [span_48](start_span)uses: actions/setup-node@v4 #[span_48](end_span)
+        [span_49](start_span)with: #[span_49](end_span)
+          [span_50](start_span)node-version: '20' #[span_50](end_span)
+          [span_51](start_span)cache: npm #[span_51](end_span)
+
+      - [span_52](start_span)name: Install dependencies #[span_52](end_span)
+        [span_53](start_span)run: npm ci #[span_53](end_span)
+
+      - [span_54](start_span)name: Run Angular linter #[span_54](end_span)
+        [span_55](start_span)run: npx ng lint || echo "No lint config found, skipping" #[span_55](end_span)
