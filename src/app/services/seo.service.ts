@@ -9,6 +9,7 @@ interface SeoConfig {
   description: string;
   keywords?: string;
   ogImage?: string;
+  ogImageAlt?: string;
   ogUrl?: string;
   noIndex?: boolean;
 }
@@ -22,6 +23,7 @@ const DEFAULT_CONFIG: SeoConfig = {
   keywords:
     'mock api, api mocking, mock http endpoints, fake api, rest api mock, mock server online, json mock api, api stub, frontend development tools, api testing tool, free mock api, mock api server, http mock server, api simulator',
   ogImage: `${BASE_URL}/og-image.png`,
+  ogImageAlt: 'MockAPI — Create mock HTTP endpoints instantly',
   ogUrl: BASE_URL,
 };
 
@@ -111,6 +113,9 @@ export class SeoService {
       this.metaService.updateTag({ property: 'og:image', content: config.ogImage });
       this.metaService.updateTag({ property: 'og:image:width', content: '1200' });
       this.metaService.updateTag({ property: 'og:image:height', content: '630' });
+      if (config.ogImageAlt) {
+        this.metaService.updateTag({ property: 'og:image:alt', content: config.ogImageAlt });
+      }
     }
 
     // Twitter Card
@@ -120,6 +125,9 @@ export class SeoService {
     this.metaService.updateTag({ name: 'twitter:url', content: canonicalUrl });
     if (config.ogImage) {
       this.metaService.updateTag({ name: 'twitter:image', content: config.ogImage });
+      if (config.ogImageAlt) {
+        this.metaService.updateTag({ name: 'twitter:image:alt', content: config.ogImageAlt });
+      }
     }
   }
 

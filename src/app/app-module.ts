@@ -14,6 +14,7 @@ import { FeaturesComponent } from './components/features/features';
 import { HowItWorksComponent } from './components/how-it-works/how-it-works';
 import { PricingComponent } from './components/pricing/pricing';
 import { FooterComponent } from './components/footer/footer';
+import { FaqComponent } from './components/faq/faq';
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({
@@ -29,6 +30,7 @@ import { SharedModule } from './shared/shared.module';
     HowItWorksComponent,
     PricingComponent,
     FooterComponent,
+    FaqComponent,
   ],
   imports: [
     BrowserModule,

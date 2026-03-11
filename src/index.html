@@ -95,7 +95,6 @@
             "name": "Pro Plan",
             "price": "5",
             "priceCurrency": "USD",
-            "billingIncrement": "P1M",
             "description": "Unlimited endpoints, 100,000 requests/month, custom headers & delays"
           }
         ],
@@ -109,18 +108,41 @@
           "Cloud hosted — accessible from anywhere",
           "Google and GitHub OAuth sign-in"
         ],
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.8",
-          "ratingCount": "150",
-          "bestRating": "5",
-          "worstRating": "1"
-        },
         "creator": {
           "@type": "Organization",
           "name": "MockAPI",
           "url": "https://mockapi.store"
         }
+      }
+    </script>
+
+    <!-- JSON-LD: HowTo -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "How to create a mock API endpoint with MockAPI",
+        "description": "Create a live mock HTTP endpoint in under a minute — no backend required.",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Define your endpoint",
+            "text": "Choose an HTTP method (GET, POST, PUT, PATCH, or DELETE), set the path, configure the status code, and optionally add a response delay."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Write your response",
+            "text": "Craft the exact JSON body your frontend expects to receive from the API."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Use your live URL",
+            "text": "Copy the generated endpoint URL and start fetching from it in your app immediately — it's live and CORS-ready."
+          }
+        ]
       }
     </script>
 
@@ -182,22 +204,14 @@
       }
     </script>
 
-    <!-- JSON-LD: WebSite with SearchAction -->
+    <!-- JSON-LD: WebSite -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "MockAPI",
         "url": "https://mockapi.store",
-        "description": "Create and manage mock HTTP endpoints instantly.",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": {
-            "@type": "EntryPoint",
-            "urlTemplate": "https://mockapi.store/?q={search_term_string}"
-          },
-          "query-input": "required name=search_term_string"
-        }
+        "description": "Create and manage mock HTTP endpoints instantly."
       }
     </script>
   </head>

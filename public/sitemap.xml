@@ -5,7 +5,7 @@
 >
   <url>
     <loc>https://mockapi.store/</loc>
-    <lastmod>2025-01-08</lastmod>
+    <lastmod>2026-03-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -16,7 +16,7 @@
   </url>
   <url>
     <loc>https://mockapi.store/login</loc>
-    <lastmod>2025-01-08</lastmod>
+    <lastmod>2026-03-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
