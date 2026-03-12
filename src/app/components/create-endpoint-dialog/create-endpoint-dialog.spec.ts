@@ -141,8 +141,8 @@ describe('CreateEndpointDialogComponent', () => {
       component.isOpen = true;
     });
 
-    it('calls mockStore.addEndpoint with correct values', () => {
-      component.create();
+    it('calls mockStore.addEndpoint with correct values', async () => {
+      await component.create();
       expect(mockStore.addEndpoint).toHaveBeenCalledWith({
         name: 'Get Users',
         method: 'GET',
@@ -153,20 +153,20 @@ describe('CreateEndpointDialogComponent', () => {
       });
     });
 
-    it('emits the created event', () => {
+    it('emits the created event', async () => {
       let emitted = false;
       component.created.subscribe(() => (emitted = true));
-      component.create();
+      await component.create();
       expect(emitted).toBeTrue();
     });
 
-    it('closes the dialog', () => {
-      component.create();
+    it('closes the dialog', async () => {
+      await component.create();
       expect(component.isOpen).toBeFalse();
     });
 
-    it('resets the form after creation', () => {
-      component.create();
+    it('resets the form after creation', async () => {
+      await component.create();
       expect(component.name).toBe('');
       expect(component.method).toBe('GET');
       expect(component.path).toBe('/api/v1/');
@@ -174,9 +174,9 @@ describe('CreateEndpointDialogComponent', () => {
       expect(component.delay).toBe(0);
     });
 
-    it('clears error on successful creation', () => {
+    it('clears error on successful creation', async () => {
       component.error = 'previous error';
-      component.create();
+      await component.create();
       expect(component.error).toBeNull();
     });
   });

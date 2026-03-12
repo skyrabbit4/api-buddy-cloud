@@ -5,6 +5,7 @@ import { FeaturesComponent } from '../../components/features/features';
 import { HowItWorksComponent } from '../../components/how-it-works/how-it-works';
 import { PricingComponent } from '../../components/pricing/pricing';
 import { FooterComponent } from '../../components/footer/footer';
+import { FaqComponent } from '../../components/faq/faq';
 import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -25,6 +26,7 @@ describe('IndexComponent', () => {
         HowItWorksComponent,
         PricingComponent,
         FooterComponent,
+        FaqComponent,
       ],
       imports: [RouterTestingModule],
       providers: [
