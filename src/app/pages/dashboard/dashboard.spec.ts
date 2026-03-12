@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
+import { of } from 'rxjs';
 import { Session } from '@supabase/supabase-js';
 
 import { DashboardComponent } from './dashboard';
@@ -8,7 +8,8 @@ import { ProfileMenuComponent } from '../../components/profile-menu/profile-menu
 import { CreateEndpointDialogComponent } from '../../components/create-endpoint-dialog/create-endpoint-dialog';
 import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
-import { MockStoreService, MockEndpoint } from '../../services/mock-store.service';
+import { MockStoreService } from '../../services/mock-store.service';
+import { UsageService } from '../../services/usage.service';
 
 const makeSession = (overrides: Partial<{ full_name: string; name: string; email: string }> = {}): Session =>
   ({
@@ -22,18 +23,6 @@ const makeSession = (overrides: Partial<{ full_name: string; name: string; email
     },
   } as unknown as Session);
 
-const makeEndpoint = (overrides: Partial<MockEndpoint> = {}): MockEndpoint => ({
-  id: 'ep-1',
-  name: 'Test EP',
-  method: 'GET',
-  path: '/api/test',
-  statusCode: 200,
-  responseBody: '{}',
-  delay: 0,
-  createdAt: '2024-01-01T00:00:00Z',
-  isActive: true,
-  ...overrides,
-});
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -41,9 +30,17 @@ describe('DashboardComponent', () => {
   let authService: MockAuthService;
   let mockStore: jasmine.SpyObj<MockStoreService>;
 
+  const mockUsageService = {
+    usage$: of(null),
+    profile$: of(null),
+    loading$: of(false),
+  };
+
   beforeEach(async () => {
     mockStore = jasmine.createSpyObj('MockStoreService', ['getEndpoints', 'addEndpoint', 'deleteEndpoint', 'toggleEndpoint']);
     mockStore.getEndpoints.and.returnValue([]);
+    (mockStore as any).endpoints$ = of([]);
+    (mockStore as any).loading$ = of(false);
 
     await TestBed.configureTestingModule({
       declarations: [DashboardComponent, ProfileMenuComponent, CreateEndpointDialogComponent],
@@ -51,6 +48,7 @@ describe('DashboardComponent', () => {
       providers: [
         { provide: AuthService, useClass: MockAuthService },
         { provide: MockStoreService, useValue: mockStore },
+        { provide: UsageService, useValue: mockUsageService },
       ],
     }).compileComponents();
 
@@ -141,25 +139,6 @@ describe('DashboardComponent', () => {
         expect(name).toBe('');
         done();
       });
-    });
-  });
-
-  // ── ngOnInit / refresh ────────────────────────────────────────────────────
-
-  describe('ngOnInit', () => {
-    it('loads endpoints from the store on init', () => {
-      const endpoints = [makeEndpoint()];
-      mockStore.getEndpoints.and.returnValue(endpoints);
-      component.ngOnInit();
-      expect(component.endpoints).toEqual(endpoints);
-    });
-  });
-
-  describe('refresh', () => {
-    it('reloads endpoints from the store', () => {
-      mockStore.getEndpoints.and.returnValue([makeEndpoint(), makeEndpoint({ id: 'ep-2' })]);
-      component.refresh();
-      expect(component.endpoints.length).toBe(2);
     });
   });
 

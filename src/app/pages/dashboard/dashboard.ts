@@ -48,6 +48,10 @@ export class DashboardComponent {
     return 'Good evening';
   }
 
+  signOut(): Promise<void> {
+    return this.authService.signOut();
+  }
+
   trackByEndpointId(_index: number, endpoint: MockEndpoint): string {
     return endpoint.id;
   }

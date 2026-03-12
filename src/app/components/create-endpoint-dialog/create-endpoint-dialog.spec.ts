@@ -11,7 +11,7 @@ describe('CreateEndpointDialogComponent', () => {
 
   beforeEach(async () => {
     mockStore = jasmine.createSpyObj('MockStoreService', ['addEndpoint']);
-    mockStore.addEndpoint.and.returnValue({
+    mockStore.addEndpoint.and.returnValue(Promise.resolve({
       id: 'new-id',
       name: 'Test',
       method: 'GET',
@@ -21,7 +21,7 @@ describe('CreateEndpointDialogComponent', () => {
       delay: 0,
       createdAt: new Date().toISOString(),
       isActive: true,
-    });
+    }));
 
     await TestBed.configureTestingModule({
       declarations: [CreateEndpointDialogComponent],
