@@ -10,7 +10,7 @@ export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate() {
-    // Wait until the auth service has finished loading the session
+    // Wait until the auth service has finished loading the sessionys
     // before deciding whether to allow access
     return this.authService.isLoaded$.pipe(
       filter(loaded => loaded),
