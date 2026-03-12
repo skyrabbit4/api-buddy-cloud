@@ -49,7 +49,7 @@ export class PricingComponent {
       highlighted: false,
     },
   ];
-
+//noted
   goToDashboard(): void {
     this.router.navigate(['/dashboard']);
   }
