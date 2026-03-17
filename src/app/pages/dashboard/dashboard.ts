@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { MockStoreService, MockEndpoint } from '../../services/mock-store.service';
 import { UsageService, UsageStats, UserProfile } from '../../services/usage.service';
@@ -19,11 +20,14 @@ export class DashboardComponent {
   loading$: Observable<boolean>;
   usage$: Observable<UsageStats | null>;
   profile$: Observable<UserProfile | null>;
+  showPaymentSuccess = false;
 
   constructor(
     private authService: AuthService,
     private mockStore: MockStoreService,
     private usageService: UsageService,
+    private route: ActivatedRoute,
+    private router: Router,
   ) {
     this.session$ = this.authService.session$;
     this.endpoints$ = this.mockStore.endpoints$;
@@ -39,6 +43,12 @@ export class DashboardComponent {
         return fullName.split(' ')[0];
       }),
     );
+
+    if (this.route.snapshot.queryParamMap.get('payment') === 'success') {
+      this.showPaymentSuccess = true;
+      this.usageService.loadUsage();
+      this.router.navigate([], { replaceUrl: true });
+    }
   }
 
   get greeting(): string {

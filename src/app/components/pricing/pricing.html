@@ -24,8 +24,14 @@
           </li>
         </ul>
 
-        <button class="plan-btn" [class.plan-btn-primary]="plan.highlighted" [class.plan-btn-outline]="!plan.highlighted" (click)="goToDashboard()">
-          {{ plan.cta }}
+        <button
+          class="plan-btn"
+          [class.plan-btn-primary]="plan.highlighted"
+          [class.plan-btn-outline]="!plan.highlighted"
+          [disabled]="isLoading && plan.key === 'pro'"
+          (click)="handlePlanClick(plan)">
+          @if (isLoading && plan.key === 'pro') {<span>Redirecting…</span>}
+          @else {<span>{{ plan.cta }}</span>}
         </button>
       </div>
     </div>

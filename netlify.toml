@@ -15,6 +15,12 @@
   to = "/.netlify/functions/mock"
   status = 200
 
+# Dodo Payments — webhook receiver
+[[redirects]]
+  from = "/api/dodo-webhook"
+  to = "/.netlify/functions/dodo-webhook"
+  status = 200
+
 # SPA fallback — all routes served by index.html so Angular Router works
 [[redirects]]
   from = "/*"

@@ -16,6 +16,15 @@
   </header>
 
   <div class="dashboard-content" *ngIf="{ endpoints: endpoints$ | async, loading: loading$ | async, usage: usage$ | async } as ctx">
+    <!-- Payment success banner -->
+    <div class="payment-success-banner" *ngIf="showPaymentSuccess">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+      <span>You're now on the <strong>Pro plan</strong> — enjoy unlimited endpoints and 100k requests/month!</span>
+      <button class="banner-close" (click)="showPaymentSuccess = false" aria-label="Dismiss">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+
     <!-- Greeting -->
     <p class="greeting" *ngIf="firstName$ | async as name">{{ greeting }}, {{ name }}</p>
 
@@ -33,7 +42,7 @@
         <div class="usage-label">Endpoints</div>
         <div class="usage-value">{{ ctx.usage.endpointCount }} / {{ ctx.usage.endpointLimit === -1 ? 'Unlimited' : ctx.usage.endpointLimit }}</div>
       </div>
-      <a class="upgrade-link" *ngIf="(profile$ | async)?.plan === 'free'">Upgrade to Pro</a>
+      <a class="upgrade-link" *ngIf="(profile$ | async)?.plan === 'free'" routerLink="/" fragment="pricing">Upgrade to Pro</a>
     </div>
 
     <!-- Loading state -->
