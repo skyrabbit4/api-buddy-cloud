@@ -69,14 +69,16 @@ export class DashboardComponent implements OnDestroy {
   }
 
   private pollUntilPlanUpgraded(): void {
-    const userId = this.authService.currentSession?.user?.id;
-    if (!userId) return;
+    const user = this.authService.currentSession?.user;
+    if (!user) return;
 
     let attempts = 0;
     this._pollInterval = setInterval(() => {
       attempts++;
-      // Call verify-subscription to pull-check Dodo and update Supabase if confirmed
-      this.http.post<{ upgraded: boolean }>('/.netlify/functions/verify-subscription', { userId })
+      this.http.post<{ upgraded: boolean }>('/.netlify/functions/verify-subscription', {
+        userId: user.id,
+        userEmail: user.email,
+      })
         .subscribe({
           next: async ({ upgraded }) => {
             await this.usageService.loadUsage();
@@ -99,15 +101,17 @@ export class DashboardComponent implements OnDestroy {
   }
 
   private verifySilently(): void {
-    const userId = this.authService.currentSession?.user?.id;
-    if (!userId) return;
-    this.http.post<{ upgraded: boolean }>('/.netlify/functions/verify-subscription', { userId })
-      .subscribe({
-        next: async ({ upgraded }) => {
-          if (upgraded) await this.usageService.loadUsage();
-        },
-        error: () => {},
-      });
+    const user = this.authService.currentSession?.user;
+    if (!user) return;
+    this.http.post<{ upgraded: boolean }>('/.netlify/functions/verify-subscription', {
+      userId: user.id,
+      userEmail: user.email,
+    }).subscribe({
+      next: async ({ upgraded }) => {
+        if (upgraded) await this.usageService.loadUsage();
+      },
+      error: () => {},
+    });
   }
 
   private clearPoll(): void {

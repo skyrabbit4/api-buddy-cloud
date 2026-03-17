@@ -23,25 +23,35 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
     return { statusCode: 405, headers: corsHeaders(event), body: JSON.stringify({ error: 'Method not allowed' }) };
   }
 
-  const { userId } = JSON.parse(event.body || '{}');
-  if (!userId) {
-    return { statusCode: 400, headers: corsHeaders(event), body: JSON.stringify({ error: 'userId required' }) };
+  const { userId, userEmail } = JSON.parse(event.body || '{}');
+  if (!userId || !userEmail) {
+    return { statusCode: 400, headers: corsHeaders(event), body: JSON.stringify({ error: 'userId and userEmail required' }) };
   }
 
   try {
-    // List active subscriptions for the Pro product
-    const subs = await dodo.subscriptions.list({
-      product_id: PRO_PRODUCT_ID,
-      status: 'active',
-    });
+    // List all subscriptions for the Pro product (no status filter — catch pending/active/on_hold)
+    const subs = await dodo.subscriptions.list({ product_id: PRO_PRODUCT_ID });
 
-    const match = subs.items.find((s) => s.metadata?.['supabase_user_id'] === userId);
+    console.log(`verify-subscription: found ${subs.items.length} total subscriptions for product`);
+    subs.items.forEach((s) =>
+      console.log(` - id=${s.subscription_id} status=${s.status} email=${s.customer?.email} metadata=${JSON.stringify(s.metadata)}`),
+    );
+
+    // Match by customer email or metadata supabase_user_id
+    const match = subs.items.find(
+      (s) =>
+        (s.customer?.email === userEmail || s.metadata?.['supabase_user_id'] === userId) &&
+        ['active', 'on_hold', 'pending'].includes(s.status),
+    );
 
     if (match) {
-      await supabase
+      console.log(`verify-subscription: upgrading user ${userId} to pro (subscription ${match.subscription_id})`);
+      const { error } = await supabase
         .from('profiles')
         .update({ plan: 'pro', request_limit: 100_000, endpoint_limit: -1 })
         .eq('id', userId);
+
+      if (error) console.error('Supabase update error:', error);
 
       return {
         statusCode: 200,
@@ -50,6 +60,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
       };
     }
 
+    console.log(`verify-subscription: no active subscription found for email=${userEmail} userId=${userId}`);
     return {
       statusCode: 200,
       headers: { ...corsHeaders(event), 'Content-Type': 'application/json' },
