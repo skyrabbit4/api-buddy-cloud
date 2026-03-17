@@ -55,6 +55,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
       },
       metadata: { supabase_user_id: userId || '' },
       return_url: `${origin}/dashboard?payment=success`,
+      trial_period_days: 7,
     });
 
     return {
