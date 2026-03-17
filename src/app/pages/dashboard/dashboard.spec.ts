@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 import { Session } from '@supabase/supabase-js';
 
@@ -46,7 +47,7 @@ describe('DashboardComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [DashboardComponent, ProfileMenuComponent, CreateEndpointDialogComponent],
-      imports: [FormsModule, RouterTestingModule],
+      imports: [FormsModule, RouterTestingModule, HttpClientTestingModule],
       providers: [
         { provide: AuthService, useClass: MockAuthService },
         { provide: MockStoreService, useValue: mockStore },

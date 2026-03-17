@@ -1,5 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { MockStoreService, MockEndpoint } from '../../services/mock-store.service';
 import { UsageService, UsageStats, UserProfile } from '../../services/usage.service';
@@ -31,6 +32,7 @@ export class DashboardComponent implements OnDestroy {
     private usageService: UsageService,
     private route: ActivatedRoute,
     private router: Router,
+    private http: HttpClient,
   ) {
     this.session$ = this.authService.session$;
     this.endpoints$ = this.mockStore.endpoints$;
@@ -55,14 +57,27 @@ export class DashboardComponent implements OnDestroy {
   }
 
   private pollUntilPlanUpgraded(): void {
+    const userId = this.authService.currentSession?.user?.id;
+    if (!userId) return;
+
     let attempts = 0;
-    this._pollInterval = setInterval(async () => {
-      await this.usageService.loadUsage();
+    this._pollInterval = setInterval(() => {
       attempts++;
-      if (attempts >= 10) {
-        this.clearPoll();
-      }
-    }, 2000);
+      // Call verify-subscription to pull-check Dodo and update Supabase if confirmed
+      this.http.post<{ upgraded: boolean }>('/.netlify/functions/verify-subscription', { userId })
+        .subscribe({
+          next: async ({ upgraded }) => {
+            await this.usageService.loadUsage();
+            if (upgraded || attempts >= 8) {
+              this.clearPoll();
+            }
+          },
+          error: async () => {
+            await this.usageService.loadUsage();
+            if (attempts >= 8) this.clearPoll();
+          },
+        });
+    }, 2500);
 
     this._profileSub = this.usageService.profile$.subscribe((profile) => {
       if (profile?.plan === 'pro') {
