@@ -35,11 +35,12 @@
           class="plan-btn"
           [class.plan-btn-primary]="plan.highlighted && !isCurrentPlan(plan.key)"
           [class.plan-btn-outline]="!plan.highlighted || isCurrentPlan(plan.key)"
-          [class.plan-btn-current]="isCurrentPlan(plan.key)"
-          [disabled]="(isLoading && plan.key === 'pro') || isCurrentPlan(plan.key)"
+          [class.plan-btn-current]="isDisabled(plan.key)"
+          [disabled]="(isLoading && plan.key === 'pro') || isDisabled(plan.key)"
           (click)="handlePlanClick(plan)">
           @if (isLoading && plan.key === 'pro') {<span>Redirecting…</span>}
           @else if (isCurrentPlan(plan.key)) {<span>✓ Current Plan</span>}
+          @else if (isDisabled(plan.key)) {<span>Not available</span>}
           @else {<span>{{ plan.cta }}</span>}
         </button>
       </div>

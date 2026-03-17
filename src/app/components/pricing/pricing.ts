@@ -79,8 +79,15 @@ export class PricingComponent implements OnDestroy {
     return this.currentPlan === planKey;
   }
 
+  isDisabled(planKey: string): boolean {
+    if (this.isCurrentPlan(planKey)) return true;
+    // Can't downgrade to free while on pro
+    if (planKey === 'free' && this.currentPlan === 'pro') return true;
+    return false;
+  }
+
   handlePlanClick(plan: Plan): void {
-    if (this.isCurrentPlan(plan.key)) return;
+    if (this.isDisabled(plan.key)) return;
 
     if (plan.key === 'free') {
       this.router.navigate(['/dashboard']);
