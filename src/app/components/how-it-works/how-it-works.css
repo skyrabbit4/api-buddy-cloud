@@ -6,51 +6,73 @@
 
 .steps-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
+  position: relative;
 }
 
 .step-card {
   display: flex;
   flex-direction: column;
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.875rem;
+  padding: 1.75rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.step-card:hover {
+  border-color: hsl(var(--primary) / 0.3);
+  box-shadow: 0 8px 32px -8px hsl(var(--primary) / 0.1);
 }
 
 .step-content {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.2), hsl(var(--primary) / 0.05));
+  border: 1px solid hsl(var(--primary) / 0.3);
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: hsl(var(--primary));
-  font-weight: 600;
+  font-weight: 700;
+  margin-bottom: 1rem;
 }
 
 .step-card h3 {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
   color: hsl(var(--foreground));
-  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .step-card p {
   font-size: 0.875rem;
   color: hsl(var(--muted-foreground));
-  margin-top: 0.5rem;
+  line-height: 1.65;
 }
 
 .step-code {
   margin-top: auto;
-  border-radius: 0.5rem;
+  border-radius: 0.625rem;
   border: 1px solid hsl(var(--border));
-  background-color: hsl(var(--card));
-  padding: 1rem;
+  background-color: hsl(220 20% 5%);
+  padding: 1rem 1.25rem;
+  overflow: hidden;
 }
 
 .step-code pre {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: hsl(var(--muted-foreground));
   white-space: pre-wrap;
   margin: 0;
+  line-height: 1.7;
 }

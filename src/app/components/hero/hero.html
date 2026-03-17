@@ -19,23 +19,18 @@
 
       <div class="hero-actions">
         <button class="btn btn-primary" (click)="goToDashboard()">
-          Start Mocking
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M5 12h14" />
-            <path d="m12 5 7 7-7 7" />
-          </svg>
+          Start Mocking — it's free
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </button>
         <a href="#how-it-works" class="btn btn-outline">See how it works</a>
+      </div>
+
+      <div class="hero-trust">
+        <span>✓ No credit card required</span>
+        <span class="trust-sep">·</span>
+        <span>✓ Free forever plan</span>
+        <span class="trust-sep">·</span>
+        <span>✓ Setup in 30 seconds</span>
       </div>
     </div>
 
@@ -46,6 +41,7 @@
           <span class="dot dot-yellow"></span>
           <span class="dot dot-green"></span>
         </div>
+        <span class="code-filename">example.js</span>
         <button
           class="copy-btn"
           (click)="copyCode()"
@@ -86,11 +82,14 @@
           </ng-container>
         </button>
       </div>
-      <pre
-        class="code-body"
-      ><code><span class="code-fn">fetch</span><span class="code-text">(</span><span class="code-str">"https://mockapi.store/api/v1/users"</span><span class="code-text">)</span>
+      <pre class="code-body"><code><span class="code-fn">fetch</span><span class="code-text">(</span><span class="code-str">"https://mockapi.store/m/users"</span><span class="code-text">)</span>
   <span class="code-muted">.then</span><span class="code-text">(</span><span class="code-var">res</span><span class="code-muted"> =&gt; </span><span class="code-var">res</span><span class="code-text">.</span><span class="code-fn">json</span><span class="code-text">())</span>
   <span class="code-muted">.then</span><span class="code-text">(</span><span class="code-var">data</span><span class="code-muted"> =&gt; </span><span class="code-text">console.</span><span class="code-fn">log</span><span class="code-text">(</span><span class="code-var">data</span><span class="code-text">))</span></code></pre>
+      <div class="code-response">
+        <span class="response-status">200 OK</span>
+        <span class="response-dot"></span>
+        <span class="response-time">~12ms</span>
+      </div>
     </div>
   </div>
 </section>
