@@ -50,14 +50,19 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
     const eventType: string = payload.type || payload.event_type;
     const data = payload.data || payload;
 
-    console.log('Dodo webhook event:', eventType);
+    console.log('Dodo webhook event:', eventType, JSON.stringify(payload));
 
     switch (eventType) {
       case 'subscription.active':
       case 'subscription.renewed': {
-        const userId = data.metadata?.supabase_user_id || data.customer?.metadata?.supabase_user_id;
+        const userId =
+          data.metadata?.supabase_user_id ||
+          data.customer?.metadata?.supabase_user_id ||
+          payload.metadata?.supabase_user_id ||
+          data.checkout_session?.metadata?.supabase_user_id ||
+          data.payment?.metadata?.supabase_user_id;
         if (!userId) {
-          console.warn('No supabase_user_id in webhook metadata');
+          console.warn('No supabase_user_id found. Payload keys:', Object.keys(data));
           break;
         }
         await supabase

@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
+import { UsageService } from '../../services/usage.service';
 
 interface Plan {
   name: string;
@@ -20,14 +22,25 @@ interface Plan {
   templateUrl: './pricing.html',
   styleUrl: './pricing.css',
 })
-export class PricingComponent {
+export class PricingComponent implements OnDestroy {
   isLoading = false;
+  currentPlan: string | null = null;
+  private _sub: Subscription;
 
   constructor(
     private router: Router,
     private http: HttpClient,
     private authService: AuthService,
-  ) {}
+    private usageService: UsageService,
+  ) {
+    this._sub = this.usageService.profile$.subscribe((p) => {
+      this.currentPlan = p?.plan ?? null;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this._sub.unsubscribe();
+  }
 
   plans: Plan[] = [
     {
@@ -62,7 +75,13 @@ export class PricingComponent {
     },
   ];
 
+  isCurrentPlan(planKey: string): boolean {
+    return this.currentPlan === planKey;
+  }
+
   handlePlanClick(plan: Plan): void {
+    if (this.isCurrentPlan(plan.key)) return;
+
     if (plan.key === 'free') {
       this.router.navigate(['/dashboard']);
       return;

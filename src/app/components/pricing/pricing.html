@@ -6,8 +6,15 @@
     </div>
 
     <div class="pricing-grid">
-      <div class="plan-card" *ngFor="let plan of plans" [class.highlighted]="plan.highlighted">
-        <div class="popular-badge" *ngIf="plan.highlighted">Most Popular</div>
+      <div
+        class="plan-card"
+        *ngFor="let plan of plans"
+        [class.highlighted]="plan.highlighted"
+        [class.current-plan-card]="isCurrentPlan(plan.key)">
+
+        <div class="current-plan-badge" *ngIf="isCurrentPlan(plan.key)">Current Plan</div>
+        <div class="popular-badge" *ngIf="plan.highlighted && !isCurrentPlan(plan.key)">Most Popular</div>
+
         <div class="plan-header">
           <h3>{{ plan.name }}</h3>
           <div class="plan-price">
@@ -26,11 +33,13 @@
 
         <button
           class="plan-btn"
-          [class.plan-btn-primary]="plan.highlighted"
-          [class.plan-btn-outline]="!plan.highlighted"
-          [disabled]="isLoading && plan.key === 'pro'"
+          [class.plan-btn-primary]="plan.highlighted && !isCurrentPlan(plan.key)"
+          [class.plan-btn-outline]="!plan.highlighted || isCurrentPlan(plan.key)"
+          [class.plan-btn-current]="isCurrentPlan(plan.key)"
+          [disabled]="(isLoading && plan.key === 'pro') || isCurrentPlan(plan.key)"
           (click)="handlePlanClick(plan)">
           @if (isLoading && plan.key === 'pro') {<span>Redirecting…</span>}
+          @else if (isCurrentPlan(plan.key)) {<span>✓ Current Plan</span>}
           @else {<span>{{ plan.cta }}</span>}
         </button>
       </div>

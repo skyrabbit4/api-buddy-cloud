@@ -130,3 +130,32 @@
 .plan-btn-outline:hover {
   background-color: hsl(var(--secondary));
 }
+
+.current-plan-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: hsl(142 60% 35%);
+  color: #fff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.current-plan-card {
+  border-color: hsl(142 60% 35% / 0.6);
+}
+
+.plan-btn-current {
+  background-color: transparent;
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+  cursor: default;
+}
+
+.plan-btn-current:hover {
+  background-color: transparent;
+}
