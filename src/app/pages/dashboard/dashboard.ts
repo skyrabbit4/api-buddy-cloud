@@ -53,6 +53,18 @@ export class DashboardComponent implements OnDestroy {
       this.showPaymentSuccess = true;
       this.router.navigate([], { replaceUrl: true });
       this.pollUntilPlanUpgraded();
+    } else {
+      // Self-heal: if profile is free but user may have already paid, verify once on load
+      this._profileSub = this.usageService.profile$.subscribe((profile) => {
+        if (profile && profile.plan === 'free') {
+          this._profileSub?.unsubscribe();
+          this._profileSub = null;
+          this.verifySilently();
+        } else if (profile) {
+          this._profileSub?.unsubscribe();
+          this._profileSub = null;
+        }
+      });
     }
   }
 
@@ -84,6 +96,18 @@ export class DashboardComponent implements OnDestroy {
         this.clearPoll();
       }
     });
+  }
+
+  private verifySilently(): void {
+    const userId = this.authService.currentSession?.user?.id;
+    if (!userId) return;
+    this.http.post<{ upgraded: boolean }>('/.netlify/functions/verify-subscription', { userId })
+      .subscribe({
+        next: async ({ upgraded }) => {
+          if (upgraded) await this.usageService.loadUsage();
+        },
+        error: () => {},
+      });
   }
 
   private clearPoll(): void {
