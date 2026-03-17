@@ -55,21 +55,15 @@ export class DashboardComponent implements OnDestroy {
   }
 
   private pollUntilPlanUpgraded(): void {
-    // Poll every 2s for up to 20s waiting for webhook to update Supabase
     let attempts = 0;
     this._pollInterval = setInterval(async () => {
       await this.usageService.loadUsage();
       attempts++;
-      const plan = this.usageService.getUsage();
-      const profile = this.usageService.profile$;
-      // Stop once profile is pro or after 10 attempts (20s)
       if (attempts >= 10) {
         this.clearPoll();
-        return;
       }
     }, 2000);
 
-    // Also watch profile$ and stop polling once plan becomes pro
     this._profileSub = this.usageService.profile$.subscribe((profile) => {
       if (profile?.plan === 'pro') {
         this.clearPoll();

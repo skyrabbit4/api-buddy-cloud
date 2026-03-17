@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { Session } from '@supabase/supabase-js';
 
@@ -34,6 +35,7 @@ describe('DashboardComponent', () => {
     usage$: of(null),
     profile$: of(null),
     loading$: of(false),
+    loadUsage: jasmine.createSpy('loadUsage').and.returnValue(Promise.resolve()),
   };
 
   beforeEach(async () => {
@@ -44,7 +46,7 @@ describe('DashboardComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [DashboardComponent, ProfileMenuComponent, CreateEndpointDialogComponent],
-      imports: [FormsModule],
+      imports: [FormsModule, RouterTestingModule],
       providers: [
         { provide: AuthService, useClass: MockAuthService },
         { provide: MockStoreService, useValue: mockStore },
