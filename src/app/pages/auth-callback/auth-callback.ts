@@ -37,7 +37,7 @@ export class AuthCallbackComponent implements OnInit, OnDestroy {
         // Remove the code/state params from the URL so they are not
         // replayed or leaked via browser history / referrer headers.
         window.history.replaceState(null, '', window.location.pathname);
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/']);
       });
 
     // Fallback: if no session arrives within 8 seconds, treat as failure.
