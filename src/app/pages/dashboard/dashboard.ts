@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { MockStoreService, MockEndpoint } from '../../services/mock-store.service';
 import { UsageService, UsageStats, UserProfile } from '../../services/usage.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Session } from '@supabase/supabase-js';
 
@@ -13,7 +13,7 @@ import { Session } from '@supabase/supabase-js';
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnDestroy {
   session$: Observable<Session | null>;
   firstName$: Observable<string>;
   endpoints$: Observable<MockEndpoint[]>;
@@ -21,6 +21,9 @@ export class DashboardComponent {
   usage$: Observable<UsageStats | null>;
   profile$: Observable<UserProfile | null>;
   showPaymentSuccess = false;
+
+  private _pollInterval: ReturnType<typeof setInterval> | null = null;
+  private _profileSub: Subscription | null = null;
 
   constructor(
     private authService: AuthService,
@@ -46,9 +49,47 @@ export class DashboardComponent {
 
     if (this.route.snapshot.queryParamMap.get('payment') === 'success') {
       this.showPaymentSuccess = true;
-      this.usageService.loadUsage();
       this.router.navigate([], { replaceUrl: true });
+      this.pollUntilPlanUpgraded();
     }
+  }
+
+  private pollUntilPlanUpgraded(): void {
+    // Poll every 2s for up to 20s waiting for webhook to update Supabase
+    let attempts = 0;
+    this._pollInterval = setInterval(async () => {
+      await this.usageService.loadUsage();
+      attempts++;
+      const plan = this.usageService.getUsage();
+      const profile = this.usageService.profile$;
+      // Stop once profile is pro or after 10 attempts (20s)
+      if (attempts >= 10) {
+        this.clearPoll();
+        return;
+      }
+    }, 2000);
+
+    // Also watch profile$ and stop polling once plan becomes pro
+    this._profileSub = this.usageService.profile$.subscribe((profile) => {
+      if (profile?.plan === 'pro') {
+        this.clearPoll();
+      }
+    });
+  }
+
+  private clearPoll(): void {
+    if (this._pollInterval !== null) {
+      clearInterval(this._pollInterval);
+      this._pollInterval = null;
+    }
+    if (this._profileSub) {
+      this._profileSub.unsubscribe();
+      this._profileSub = null;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.clearPoll();
   }
 
   get greeting(): string {

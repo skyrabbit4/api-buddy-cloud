@@ -56,6 +56,13 @@
   padding: 0.25rem 0.75rem;
 }
 
+.plan-badge--pro {
+  background-color: hsl(var(--primary) / 0.15);
+  border-color: hsl(var(--primary) / 0.5);
+  color: hsl(var(--primary));
+  font-weight: 600;
+}
+
 .signout-btn {
   background: none;
   border: 1px solid hsl(var(--border));

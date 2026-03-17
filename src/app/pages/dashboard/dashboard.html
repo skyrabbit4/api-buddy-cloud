@@ -9,7 +9,7 @@
         <span>MockAPI</span>
       </a>
       <div class="header-actions">
-        <span class="plan-badge" *ngIf="profile$ | async as profile">{{ profile.plan | titlecase }} Plan</span>
+        <span class="plan-badge" *ngIf="profile$ | async as profile" [class.plan-badge--pro]="profile.plan === 'pro'">{{ profile.plan | titlecase }} Plan</span>
         <app-profile-menu></app-profile-menu>
       </div>
     </div>

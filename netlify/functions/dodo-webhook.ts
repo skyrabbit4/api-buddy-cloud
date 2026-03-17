@@ -13,7 +13,7 @@ const WEBHOOK_SECRET = process.env['DODO_WEBHOOK_SECRET']!;
 const PRO_LIMITS = {
   plan: 'pro',
   request_limit: 100_000,
-  endpoint_limit: 1_000_000,
+  endpoint_limit: -1,
 };
 
 const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) => {
