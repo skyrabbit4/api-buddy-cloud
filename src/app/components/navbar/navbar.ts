@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
+import { UsageService, UserProfile } from '../../services/usage.service';
 import { Session } from '@supabase/supabase-js';
 import { Observable } from 'rxjs';
 
@@ -11,10 +12,16 @@ import { Observable } from 'rxjs';
 })
 export class NavbarComponent {
   session$: Observable<Session | null>;
+  profile$: Observable<UserProfile | null>;
   mobileMenuOpen = false;
 
-  constructor(private authService: AuthService, private elRef: ElementRef) {
+  constructor(
+    private authService: AuthService,
+    private usageService: UsageService,
+    private elRef: ElementRef,
+  ) {
     this.session$ = this.authService.session$;
+    this.profile$ = this.usageService.profile$;
   }
 
   toggleMobileMenu(): void {

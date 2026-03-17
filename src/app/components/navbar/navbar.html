@@ -19,6 +19,7 @@
         <a routerLink="/login" class="nav-btn nav-btn-primary desktop-only">Get Started</a>
       </ng-container>
       <ng-container *ngIf="session$ | async">
+        <span class="pro-badge desktop-only" *ngIf="(profile$ | async)?.plan === 'pro'">Pro</span>
         <a routerLink="/dashboard" class="nav-btn nav-btn-ghost desktop-only">Dashboard</a>
         <app-profile-menu></app-profile-menu>
       </ng-container>
