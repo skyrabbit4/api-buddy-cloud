@@ -196,4 +196,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.chartMax === 0) return 4;
     return Math.max(4, (count / this.chartMax) * 80);
   }
+
+  upgradeToPro(): void {
+    const user = this.authService.currentSession?.user;
+    if (!user) return;
+
+    this.http.post<{ checkoutUrl: string }>('/.netlify/functions/create-checkout', {
+      userId: user.id,
+      userEmail: user.email,
+    }).subscribe({
+      next: ({ checkoutUrl }) => {
+        window.location.href = checkoutUrl;
+      },
+      error: (err) => {
+        console.error('Checkout error:', err);
+      },
+    });
+  }
 }

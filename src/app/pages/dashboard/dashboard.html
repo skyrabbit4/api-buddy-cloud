@@ -42,7 +42,7 @@
         <div class="usage-label">Endpoints</div>
         <div class="usage-value">{{ ctx.usage.endpointCount }} / {{ ctx.usage.endpointLimit === -1 ? 'Unlimited' : ctx.usage.endpointLimit }}</div>
       </div>
-      <a class="upgrade-link" *ngIf="(profile$ | async)?.plan === 'free'" routerLink="/" fragment="pricing">Upgrade to Pro</a>
+      <button class="upgrade-link" *ngIf="(profile$ | async)?.plan === 'free'" (click)="upgradeToPro()">Upgrade to Pro</button>
     </div>
 
     <!-- Requests Chart -->
