@@ -17,6 +17,9 @@ export class EndpointCardComponent implements OnInit {
   lastRequestAt: string | null = null;
   recentRequests: { method: string; status_code: number; created_at: string }[] = [];
   showHistory = false;
+  showShare = false;
+  shareEmail = '';
+  shareStatus: 'idle' | 'loading' | 'success' | 'error' = 'idle';
 
   methodColors: Record<string, string> = {
     GET: 'method-get',
@@ -107,5 +110,38 @@ export class EndpointCardComponent implements OnInit {
 
   async toggleEndpoint(): Promise<void> {
     await this.mockStore.toggleEndpoint(this.endpoint.id);
+  }
+
+  toggleShare(): void {
+    this.showShare = !this.showShare;
+    this.shareEmail = '';
+    this.shareStatus = 'idle';
+  }
+
+  async shareEndpoint(): Promise<void> {
+    if (!this.shareEmail.trim()) return;
+
+    this.shareStatus = 'loading';
+    const supabase = this.supabaseService.getSupabase();
+    if (!supabase) {
+      this.shareStatus = 'error';
+      return;
+    }
+
+    const { data, error } = await supabase.rpc('share_endpoint_by_email', {
+      p_endpoint_id: this.endpoint.id,
+      p_email: this.shareEmail.trim(),
+    });
+
+    if (error || !data) {
+      this.shareStatus = 'error';
+    } else {
+      this.shareStatus = 'success';
+      this.shareEmail = '';
+      setTimeout(() => {
+        this.showShare = false;
+        this.shareStatus = 'idle';
+      }, 1500);
+    }
   }
 }
