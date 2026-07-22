@@ -15,7 +15,6 @@
 
     <div class="nav-actions">
       <ng-container *ngIf="!(session$ | async)">
-        <a routerLink="/login" class="nav-btn nav-btn-ghost desktop-only">Log in</a>
         <a routerLink="/login" class="nav-btn nav-btn-primary desktop-only">Get Started</a>
       </ng-container>
       <ng-container *ngIf="session$ | async">
@@ -39,7 +38,6 @@
     <a href="#pricing" class="mobile-link" (click)="closeMobileMenu()">Pricing</a>
     <div class="mobile-divider"></div>
     <ng-container *ngIf="!(session$ | async)">
-      <a routerLink="/login" class="mobile-link" (click)="closeMobileMenu()">Log in</a>
       <a routerLink="/login" class="mobile-link mobile-link-primary" (click)="closeMobileMenu()">Get Started</a>
     </ng-container>
     <ng-container *ngIf="session$ | async">
