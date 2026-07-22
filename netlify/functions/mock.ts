@@ -88,18 +88,31 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
     // Log request (async, don't await)
     logRequest(endpoint.id, endpoint.user_id, event.httpMethod!, endpoint.status_code, responseTime);
 
-    // Return the mock response
+    // Process dynamic variables in response body
+    let responseBody = typeof endpoint.response_body === 'string'
+      ? endpoint.response_body
+      : JSON.stringify(endpoint.response_body);
+    responseBody = processDynamicVariables(responseBody);
+
+    // Merge custom headers
+    const customHeaders = endpoint.response_headers || {};
+    const responseHeaders = {
+      ...corsHeaders(event),
+      'Content-Type': 'application/json',
+      'X-MockAPI-Endpoint': endpoint.name,
+      'X-MockAPI-Response-Time': `${responseTime}ms`,
+      ...customHeaders,
+    };
+
+    // Forward to webhook if configured (fire-and-forget)
+    if (endpoint.webhook_url) {
+      forwardToWebhook(endpoint.webhook_url, event, responseBody, responseTime);
+    }
+
     return {
       statusCode: endpoint.status_code,
-      headers: {
-        ...corsHeaders(event),
-        'Content-Type': 'application/json',
-        'X-MockAPI-Endpoint': endpoint.name,
-        'X-MockAPI-Response-Time': `${responseTime}ms`,
-      },
-      body: typeof endpoint.response_body === 'string'
-        ? endpoint.response_body
-        : JSON.stringify(endpoint.response_body),
+      headers: responseHeaders,
+      body: responseBody,
     };
   } catch (err) {
     console.error('Error serving mock endpoint:', err);
@@ -123,6 +136,48 @@ function corsHeaders(event: HandlerEvent): Record<string, string> {
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Process dynamic variables like {{$randomName}}, {{$timestamp}}, etc.
+function processDynamicVariables(body: string): string {
+  const names = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry'];
+  const emails = ['user@example.com', 'test@demo.com', 'hello@mock.api', 'dev@test.io'];
+
+  return body
+    .replace(/\{\{\$randomName\}\}/g, () => names[Math.floor(Math.random() * names.length)])
+    .replace(/\{\{\$randomEmail\}\}/g, () => emails[Math.floor(Math.random() * emails.length)])
+    .replace(/\{\{\$randomInt\}\}/g, () => String(Math.floor(Math.random() * 1000)))
+    .replace(/\{\{\$randomUuid\}\}/g, () => crypto.randomUUID())
+    .replace(/\{\{\$timestamp\}\}/g, () => new Date().toISOString())
+    .replace(/\{\{\$date\}\}/g, () => new Date().toISOString().slice(0, 10))
+    .replace(/\{\{\$randomBool\}\}/g, () => String(Math.random() > 0.5));
+}
+
+// Forward request to webhook URL
+function forwardToWebhook(
+  webhookUrl: string,
+  event: HandlerEvent,
+  responseBody: string,
+  responseTimeMs: number,
+): void {
+  fetch(webhookUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      request: {
+        method: event.httpMethod,
+        path: event.path,
+        headers: event.headers,
+        body: event.body,
+        queryParams: event.queryStringParameters,
+      },
+      response: {
+        body: responseBody,
+        responseTimeMs,
+      },
+    }),
+  }).catch((err) => console.error('Webhook forward failed:', err));
 }
 
 // Fire-and-forget request logging

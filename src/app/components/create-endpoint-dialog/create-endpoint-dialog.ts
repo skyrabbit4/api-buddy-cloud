@@ -24,6 +24,9 @@ export class CreateEndpointDialogComponent {
   "email": "john@example.com",
   "status": "active"
 }`;
+  responseHeaders = '';
+  webhookUrl = '';
+  showAdvanced = false;
   error: string | null = null;
   methods: HttpMethod[] = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
@@ -80,12 +83,25 @@ export class CreateEndpointDialogComponent {
       return;
     }
 
+    let headers: Record<string, string> = {};
+    if (this.responseHeaders.trim()) {
+      try {
+        headers = JSON.parse(this.responseHeaders);
+      } catch {
+        this.error = 'Response headers must be valid JSON';
+        return;
+      }
+    }
+
     const result = await this.mockStore.addEndpoint({
       name: this.name,
       method: this.method,
       path: this.path,
       statusCode: this.statusCode,
       responseBody: this.responseBody,
+      responseHeaders: headers,
+      webhookUrl: this.webhookUrl.trim() || null,
+      sharedWith: [],
       delay: this.delay,
     });
 
@@ -111,5 +127,8 @@ export class CreateEndpointDialogComponent {
   "email": "john@example.com",
   "status": "active"
 }`;
+    this.responseHeaders = '';
+    this.webhookUrl = '';
+    this.showAdvanced = false;
   }
 }

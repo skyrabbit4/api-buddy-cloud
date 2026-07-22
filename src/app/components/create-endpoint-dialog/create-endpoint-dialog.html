@@ -103,6 +103,40 @@
         ></textarea>
       </div>
 
+      <button class="advanced-toggle" type="button" (click)="showAdvanced = !showAdvanced">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" [style.transform]="showAdvanced ? 'rotate(90deg)' : ''"><path d="m9 18 6-6-6-6"/></svg>
+        Advanced Options
+      </button>
+
+      <div class="advanced-section" *ngIf="showAdvanced">
+        <div class="form-group">
+          <label for="headers">Response Headers (JSON)</label>
+          <textarea
+            id="headers"
+            [(ngModel)]="responseHeaders"
+            rows="3"
+            class="mono"
+            placeholder='{"X-Custom-Header": "value"}'
+            spellcheck="false"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="webhook">Webhook URL (forwards requests)</label>
+          <input
+            id="webhook"
+            type="url"
+            [(ngModel)]="webhookUrl"
+            placeholder="https://your-server.com/webhook"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="dynamic-hint">
+          <strong>Dynamic variables:</strong> Use <code>{{"{{$randomName}}"}}</code>, <code>{{"{{$randomEmail}}"}}</code>, <code>{{"{{$randomInt}}"}}</code>, <code>{{"{{$randomUuid}}"}}</code>, <code>{{"{{$timestamp}}"}}</code>, <code>{{"{{$date}}"}}</code>, <code>{{"{{$randomBool}}"}}</code> in your response body.
+        </div>
+      </div>
+
       <button class="create-btn" (click)="create()">Create Endpoint</button>
     </div>
   </div>

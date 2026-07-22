@@ -104,6 +104,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       path: e.path,
       statusCode: e.statusCode,
       responseBody: e.responseBody,
+      responseHeaders: e.responseHeaders,
+      webhookUrl: e.webhookUrl,
       delay: e.delay,
     }));
 
@@ -114,6 +116,30 @@ export class DashboardComponent implements OnInit, OnDestroy {
     a.download = `mockapi-endpoints-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  importEndpoints(): void {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        if (!Array.isArray(data)) {
+          alert('Invalid file format. Expected an array of endpoints.');
+          return;
+        }
+        const count = await this.mockStore.importEndpoints(data);
+        alert(`Successfully imported ${count} endpoint(s).`);
+      } catch {
+        alert('Failed to parse JSON file.');
+      }
+    };
+    input.click();
   }
 
   private pollUntilPlanUpgraded(): void {

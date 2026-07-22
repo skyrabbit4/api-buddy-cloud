@@ -13,6 +13,9 @@ export interface MockEndpoint {
   path: string;
   statusCode: number;
   responseBody: string;
+  responseHeaders: Record<string, string>;
+  webhookUrl: string | null;
+  sharedWith: string[];
   delay: number;
   createdAt: string;
   isActive: boolean;
@@ -26,6 +29,9 @@ interface DbEndpoint {
   path: string;
   status_code: number;
   response_body: string;
+  response_headers: Record<string, string>;
+  webhook_url: string | null;
+  shared_with: string[];
   delay: number;
   is_active: boolean;
   created_at: string;
@@ -72,6 +78,9 @@ export class MockStoreService {
       responseBody: typeof db.response_body === 'string'
         ? db.response_body
         : JSON.stringify(db.response_body, null, 2),
+      responseHeaders: db.response_headers || {},
+      webhookUrl: db.webhook_url,
+      sharedWith: db.shared_with || [],
       delay: db.delay,
       createdAt: db.created_at,
       isActive: db.is_active,
@@ -135,6 +144,8 @@ export class MockStoreService {
           path: endpoint.path,
           status_code: endpoint.statusCode,
           response_body: responseBodyJson,
+          response_headers: endpoint.responseHeaders || {},
+          webhook_url: endpoint.webhookUrl || null,
           delay: endpoint.delay,
         })
         .select()
@@ -240,5 +251,30 @@ export class MockStoreService {
       console.error('Failed to update endpoint:', err);
       this._error.next('Failed to update endpoint');
     }
+  }
+
+  async importEndpoints(endpoints: Partial<MockEndpoint>[]): Promise<number> {
+    const userId = this.authService.currentSession?.user?.id;
+    if (!userId) {
+      this._error.next('Not authenticated');
+      return 0;
+    }
+
+    let imported = 0;
+    for (const ep of endpoints) {
+      const result = await this.addEndpoint({
+        name: ep.name || 'Imported Endpoint',
+        method: (ep.method as HttpMethod) || 'GET',
+        path: ep.path || '/api/imported',
+        statusCode: ep.statusCode || 200,
+        responseBody: ep.responseBody || '{}',
+        responseHeaders: ep.responseHeaders || {},
+        webhookUrl: ep.webhookUrl || null,
+        sharedWith: [],
+        delay: ep.delay || 0,
+      });
+      if (result) imported++;
+    }
+    return imported;
   }
 }
