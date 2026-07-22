@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { SupabaseService } from './supabase.service';
 import { AuthService } from './auth.service';
+import { UsageService } from './usage.service';
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -45,6 +46,7 @@ export class MockStoreService {
   constructor(
     private supabaseService: SupabaseService,
     private authService: AuthService,
+    private usageService: UsageService,
   ) {
     // Reload endpoints when auth state changes
     this.authService.session$.subscribe((session) => {
@@ -142,6 +144,7 @@ export class MockStoreService {
 
       const newEndpoint = this.mapDbToEndpoint(data);
       this._endpoints.next([newEndpoint, ...this._endpoints.getValue()]);
+      this.usageService.refresh();
       return newEndpoint;
     } catch (err) {
       console.error('Failed to create endpoint:', err);
@@ -164,6 +167,7 @@ export class MockStoreService {
       if (error) throw error;
 
       this._endpoints.next(this._endpoints.getValue().filter((e) => e.id !== id));
+      this.usageService.refresh();
     } catch (err) {
       console.error('Failed to delete endpoint:', err);
       this._error.next('Failed to delete endpoint');

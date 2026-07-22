@@ -127,4 +127,8 @@ export class UsageService implements OnDestroy {
   getUsage(): UsageStats | null {
     return this._usage.getValue();
   }
+
+  refresh(): void {
+    this.loadUsage();
+  }
 }
