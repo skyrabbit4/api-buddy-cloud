@@ -253,15 +253,31 @@ export class MockStoreService {
     }
   }
 
-  async importEndpoints(endpoints: Partial<MockEndpoint>[]): Promise<number> {
+  async importEndpoints(endpoints: Partial<MockEndpoint>[]): Promise<{ imported: number; skipped: number; reason?: string }> {
     const userId = this.authService.currentSession?.user?.id;
     if (!userId) {
       this._error.next('Not authenticated');
-      return 0;
+      return { imported: 0, skipped: endpoints.length, reason: 'Not authenticated' };
     }
 
+    // Check current usage
+    const usage = this.usageService.getUsage();
+    if (!usage) {
+      return { imported: 0, skipped: endpoints.length, reason: 'Could not fetch usage' };
+    }
+
+    const currentCount = usage.endpointCount;
+    const limit = usage.endpointLimit;
+    const canImport = limit === -1 ? endpoints.length : Math.max(0, limit - currentCount);
+
+    if (canImport === 0) {
+      return { imported: 0, skipped: endpoints.length, reason: 'Endpoint limit reached' };
+    }
+
+    const toImport = endpoints.slice(0, canImport);
     let imported = 0;
-    for (const ep of endpoints) {
+
+    for (const ep of toImport) {
       const result = await this.addEndpoint({
         name: ep.name || 'Imported Endpoint',
         method: (ep.method as HttpMethod) || 'GET',
@@ -275,6 +291,7 @@ export class MockStoreService {
       });
       if (result) imported++;
     }
-    return imported;
+
+    return { imported, skipped: endpoints.length - imported };
   }
 }

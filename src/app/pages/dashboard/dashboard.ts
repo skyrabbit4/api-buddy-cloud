@@ -133,8 +133,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
           alert('Invalid file format. Expected an array of endpoints.');
           return;
         }
-        const count = await this.mockStore.importEndpoints(data);
-        alert(`Successfully imported ${count} endpoint(s).`);
+        const result = await this.mockStore.importEndpoints(data);
+        if (result.skipped > 0 && result.reason) {
+          alert(`Imported ${result.imported} endpoint(s). Skipped ${result.skipped} (${result.reason}).`);
+        } else {
+          alert(`Successfully imported ${result.imported} endpoint(s).`);
+        }
       } catch {
         alert('Failed to parse JSON file.');
       }
