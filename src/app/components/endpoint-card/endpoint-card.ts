@@ -14,6 +14,7 @@ export class EndpointCardComponent implements OnInit {
 
   urlCopied = false;
   requestCount = 0;
+  lastRequestAt: string | null = null;
   recentRequests: { method: string; status_code: number; created_at: string }[] = [];
   showHistory = false;
 
@@ -52,6 +53,16 @@ export class EndpointCardComponent implements OnInit {
       .eq('endpoint_id', this.endpoint.id);
 
     this.requestCount = count || 0;
+
+    const { data } = await supabase
+      .from('request_logs')
+      .select('created_at')
+      .eq('endpoint_id', this.endpoint.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    this.lastRequestAt = data?.created_at || null;
   }
 
   async toggleHistory(): Promise<void> {

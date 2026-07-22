@@ -45,6 +45,20 @@
       <a class="upgrade-link" *ngIf="(profile$ | async)?.plan === 'free'" routerLink="/" fragment="pricing">Upgrade to Pro</a>
     </div>
 
+    <!-- Requests Chart -->
+    <div class="chart-card" *ngIf="chartData.length > 0">
+      <div class="chart-header">
+        <span class="chart-title">Requests (Last 7 Days)</span>
+      </div>
+      <div class="chart-bars">
+        <div class="chart-bar-wrapper" *ngFor="let day of chartData">
+          <div class="chart-bar" [style.height.%]="chartMax > 0 ? (day.count / chartMax) * 100 : 0"></div>
+          <span class="chart-count">{{ day.count }}</span>
+          <span class="chart-label">{{ day.day }}</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Loading state -->
     <div class="loading-state" *ngIf="ctx.loading">
       <div class="loading-spinner"></div>
@@ -60,7 +74,13 @@
           </h1>
           <p class="endpoint-count">{{ (ctx.endpoints?.length || 0) }} endpoint{{ (ctx.endpoints?.length || 0) !== 1 ? 's' : '' }} created</p>
         </div>
-        <app-create-endpoint-dialog [disabled]="!!(ctx.usage && ctx.usage.endpointLimit !== -1 && ctx.usage.endpointCount >= ctx.usage.endpointLimit)"></app-create-endpoint-dialog>
+        <div class="dashboard-actions">
+          <button class="export-btn" (click)="exportEndpoints()" *ngIf="ctx.endpoints?.length" title="Export endpoints as JSON">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            Export
+          </button>
+          <app-create-endpoint-dialog [disabled]="!!(ctx.usage && ctx.usage.endpointLimit !== -1 && ctx.usage.endpointCount >= ctx.usage.endpointLimit)"></app-create-endpoint-dialog>
+        </div>
       </div>
 
       <!-- Empty state -->

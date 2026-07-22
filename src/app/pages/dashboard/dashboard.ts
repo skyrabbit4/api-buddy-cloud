@@ -1,9 +1,10 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { MockStoreService, MockEndpoint } from '../../services/mock-store.service';
 import { UsageService, UsageStats, UserProfile } from '../../services/usage.service';
+import { SupabaseService } from '../../services/supabase.service';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Session } from '@supabase/supabase-js';
@@ -14,7 +15,7 @@ import { Session } from '@supabase/supabase-js';
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class DashboardComponent implements OnDestroy {
+export class DashboardComponent implements OnInit, OnDestroy {
   session$: Observable<Session | null>;
   firstName$: Observable<string>;
   endpoints$: Observable<MockEndpoint[]>;
@@ -23,6 +24,10 @@ export class DashboardComponent implements OnDestroy {
   profile$: Observable<UserProfile | null>;
   showPaymentSuccess = false;
 
+  // Chart data for last 7 days
+  chartData: { day: string; count: number }[] = [];
+  chartMax = 0;
+
   private _pollInterval: ReturnType<typeof setInterval> | null = null;
   private _profileSub: Subscription | null = null;
 
@@ -30,6 +35,7 @@ export class DashboardComponent implements OnDestroy {
     private authService: AuthService,
     private mockStore: MockStoreService,
     private usageService: UsageService,
+    private supabaseService: SupabaseService,
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpClient,
@@ -66,6 +72,60 @@ export class DashboardComponent implements OnDestroy {
         }
       });
     }
+  }
+
+  async ngOnInit(): Promise<void> {
+    await this.loadChartData();
+  }
+
+  private async loadChartData(): Promise<void> {
+    const supabase = this.supabaseService.getSupabase();
+    if (!supabase) return;
+
+    const userId = this.authService.currentSession?.user?.id;
+    if (!userId) return;
+
+    const days: { day: string; count: number }[] = [];
+    const today = new Date();
+
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      const dayStr = date.toISOString().slice(0, 10);
+      const dayLabel = date.toLocaleDateString('en', { weekday: 'short' });
+
+      const { count } = await supabase
+        .from('request_logs')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .gte('created_at', `${dayStr}T00:00:00`)
+        .lt('created_at', `${dayStr}T23:59:59`);
+
+      days.push({ day: dayLabel, count: count || 0 });
+    }
+
+    this.chartData = days;
+    this.chartMax = Math.max(...days.map((d) => d.count), 1);
+  }
+
+  exportEndpoints(): void {
+    const endpoints = this.mockStore.getEndpoints();
+    const exportData = endpoints.map((e) => ({
+      name: e.name,
+      method: e.method,
+      path: e.path,
+      statusCode: e.statusCode,
+      responseBody: e.responseBody,
+      delay: e.delay,
+    }));
+
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mockapi-endpoints-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   private pollUntilPlanUpgraded(): void {

@@ -12,6 +12,10 @@
         <span>Delay: {{ endpoint.delay }}ms</span>
         <span>•</span>
         <span>{{ requestCount }} requests</span>
+        <ng-container *ngIf="lastRequestAt">
+          <span>•</span>
+          <span>Last: {{ lastRequestAt | date:'short' }}</span>
+        </ng-container>
       </div>
     </div>
 
