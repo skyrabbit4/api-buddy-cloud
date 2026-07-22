@@ -202,8 +202,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (!user) return;
 
     this.http.post<{ checkoutUrl: string }>('/.netlify/functions/create-checkout', {
+      plan: 'pro',
       userId: user.id,
       userEmail: user.email,
+      userName: user.user_metadata?.['full_name'] || user.email,
     }).subscribe({
       next: ({ checkoutUrl }) => {
         window.location.href = checkoutUrl;
