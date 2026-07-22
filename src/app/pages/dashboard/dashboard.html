@@ -52,7 +52,9 @@
       </div>
       <div class="chart-bars">
         <div class="chart-bar-wrapper" *ngFor="let day of chartData">
-          <div class="chart-bar" [style.height.%]="chartMax > 0 ? (day.count / chartMax) * 100 : 0"></div>
+          <div class="chart-bar-container">
+            <div class="chart-bar" [style.height.px]="getBarHeight(day.count)"></div>
+          </div>
           <span class="chart-count">{{ day.count }}</span>
           <span class="chart-label">{{ day.day }}</span>
         </div>

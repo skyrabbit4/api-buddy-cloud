@@ -203,4 +203,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   trackByEndpointId(_index: number, endpoint: MockEndpoint): string {
     return endpoint.id;
   }
+
+  getBarHeight(count: number): number {
+    if (this.chartMax === 0) return 4;
+    return Math.max(4, (count / this.chartMax) * 80);
+  }
 }
