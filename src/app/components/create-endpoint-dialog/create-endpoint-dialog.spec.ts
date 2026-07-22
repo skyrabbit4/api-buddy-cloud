@@ -18,6 +18,9 @@ describe('CreateEndpointDialogComponent', () => {
       path: '/api/test',
       statusCode: 200,
       responseBody: '{}',
+      responseHeaders: {},
+      webhookUrl: null,
+      sharedWith: [],
       delay: 0,
       createdAt: new Date().toISOString(),
       isActive: true,
@@ -143,14 +146,14 @@ describe('CreateEndpointDialogComponent', () => {
 
     it('calls mockStore.addEndpoint with correct values', async () => {
       await component.create();
-      expect(mockStore.addEndpoint).toHaveBeenCalledWith({
+      expect(mockStore.addEndpoint).toHaveBeenCalledWith(jasmine.objectContaining({
         name: 'Get Users',
         method: 'GET',
         path: '/api/v1/users',
         statusCode: 200,
         responseBody: '{"users":[]}',
         delay: 100,
-      });
+      }));
     });
 
     it('emits the created event', async () => {

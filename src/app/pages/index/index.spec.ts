@@ -8,13 +8,24 @@ import { FooterComponent } from '../../components/footer/footer';
 import { FaqComponent } from '../../components/faq/faq';
 import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
+import { SupabaseService } from '../../services/supabase.service';
+import { UsageService } from '../../services/usage.service';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { of } from 'rxjs';
 
 import { IndexComponent } from './index';
 
 describe('IndexComponent', () => {
   let component: IndexComponent;
   let fixture: ComponentFixture<IndexComponent>;
+
+  const mockUsageService = {
+    usage$: of(null),
+    profile$: of(null),
+    loading$: of(false),
+    loadUsage: jasmine.createSpy('loadUsage').and.returnValue(Promise.resolve()),
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -28,9 +39,11 @@ describe('IndexComponent', () => {
         FooterComponent,
         FaqComponent,
       ],
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule, HttpClientTestingModule],
       providers: [
-        { provide: AuthService, useClass: MockAuthService }
+        { provide: AuthService, useClass: MockAuthService },
+        { provide: SupabaseService, useValue: { getSupabase: () => null } },
+        { provide: UsageService, useValue: mockUsageService }
       ]
     })
     .compileComponents();

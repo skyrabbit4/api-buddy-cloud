@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
 import { MockStoreService } from '../../services/mock-store.service';
 import { UsageService } from '../../services/usage.service';
+import { SupabaseService } from '../../services/supabase.service';
 
 const makeSession = (overrides: Partial<{ full_name: string; name: string; email: string }> = {}): Session =>
   ({
@@ -39,6 +40,10 @@ describe('DashboardComponent', () => {
     loadUsage: jasmine.createSpy('loadUsage').and.returnValue(Promise.resolve()),
   };
 
+  const mockSupabaseService = {
+    getSupabase: () => null,
+  };
+
   beforeEach(async () => {
     mockStore = jasmine.createSpyObj('MockStoreService', ['getEndpoints', 'addEndpoint', 'deleteEndpoint', 'toggleEndpoint']);
     mockStore.getEndpoints.and.returnValue([]);
@@ -52,6 +57,7 @@ describe('DashboardComponent', () => {
         { provide: AuthService, useClass: MockAuthService },
         { provide: MockStoreService, useValue: mockStore },
         { provide: UsageService, useValue: mockUsageService },
+        { provide: SupabaseService, useValue: mockSupabaseService },
       ],
     }).compileComponents();
 

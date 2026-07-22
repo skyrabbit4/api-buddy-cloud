@@ -29,6 +29,9 @@ const makeDbEndpoint = (overrides: any = {}) => ({
   path: '/api/test',
   status_code: 200,
   response_body: '{"ok":true}',
+  response_headers: {},
+  webhook_url: null,
+  shared_with: [],
   delay: 0,
   created_at: '2024-01-01T00:00:00.000Z',
   is_active: true,
@@ -127,6 +130,9 @@ describe('MockStoreService', () => {
         path: '/api/users',
         statusCode: 201,
         responseBody: '{}',
+        responseHeaders: {},
+        webhookUrl: null,
+        sharedWith: [],
         delay: 0,
       });
       expect(result?.id).toBeTruthy();
@@ -138,7 +144,7 @@ describe('MockStoreService', () => {
     it('returns null when not authenticated', async () => {
       mockAuth.setSession(null);
       const result = await service.addEndpoint({
-        name: 'A', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', delay: 0,
+        name: 'A', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', responseHeaders: {}, webhookUrl: null, sharedWith: [], delay: 0,
       });
       expect(result).toBeNull();
     });
@@ -146,7 +152,7 @@ describe('MockStoreService', () => {
     it('appends endpoint to the list', async () => {
       fromSpy.and.returnValue(queryOf({ data: makeDbEndpoint(), error: null }));
       await service.addEndpoint({
-        name: 'EP1', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', delay: 0,
+        name: 'EP1', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', responseHeaders: {}, webhookUrl: null, sharedWith: [], delay: 0,
       });
       expect(service.getEndpoints().length).toBe(1);
     });
@@ -156,15 +162,15 @@ describe('MockStoreService', () => {
         queryOf({ data: makeDbEndpoint({ id: 'id-1' }), error: null }),
         queryOf({ data: makeDbEndpoint({ id: 'id-2' }), error: null }),
       );
-      const a = await service.addEndpoint({ name: 'A', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', delay: 0 });
-      const b = await service.addEndpoint({ name: 'B', method: 'GET', path: '/b', statusCode: 200, responseBody: '{}', delay: 0 });
+      const a = await service.addEndpoint({ name: 'A', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', responseHeaders: {}, webhookUrl: null, sharedWith: [], delay: 0 });
+      const b = await service.addEndpoint({ name: 'B', method: 'GET', path: '/b', statusCode: 200, responseBody: '{}', responseHeaders: {}, webhookUrl: null, sharedWith: [], delay: 0 });
       expect(a?.id).not.toBe(b?.id);
     });
 
     it('returns null on Supabase error', async () => {
       fromSpy.and.returnValue(queryOf({ data: null, error: new Error('DB error') }));
       const result = await service.addEndpoint({
-        name: 'A', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', delay: 0,
+        name: 'A', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', responseHeaders: {}, webhookUrl: null, sharedWith: [], delay: 0,
       });
       expect(result).toBeNull();
     });
@@ -179,7 +185,7 @@ describe('MockStoreService', () => {
 
     it('removes the endpoint with the given id', async () => {
       (service as any)._endpoints.next([
-        { id: 'ep-to-delete', name: 'X', method: 'GET', path: '/x', statusCode: 200, responseBody: '{}', delay: 0, createdAt: '', isActive: true },
+        { id: 'ep-to-delete', name: 'X', method: 'GET', path: '/x', statusCode: 200, responseBody: '{}', responseHeaders: {}, webhookUrl: null, sharedWith: [], delay: 0, createdAt: '', isActive: true },
       ]);
       fromSpy.and.returnValue(queryOf({ data: null, error: null }));
       await service.deleteEndpoint('ep-to-delete');
@@ -188,8 +194,8 @@ describe('MockStoreService', () => {
 
     it('leaves other endpoints intact', async () => {
       (service as any)._endpoints.next([
-        { id: 'id-a', name: 'A', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', delay: 0, createdAt: '', isActive: true },
-        { id: 'id-b', name: 'B', method: 'GET', path: '/b', statusCode: 200, responseBody: '{}', delay: 0, createdAt: '', isActive: true },
+        { id: 'id-a', name: 'A', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', responseHeaders: {}, webhookUrl: null, sharedWith: [], delay: 0, createdAt: '', isActive: true },
+        { id: 'id-b', name: 'B', method: 'GET', path: '/b', statusCode: 200, responseBody: '{}', responseHeaders: {}, webhookUrl: null, sharedWith: [], delay: 0, createdAt: '', isActive: true },
       ]);
       fromSpy.and.returnValue(queryOf({ data: null, error: null }));
       await service.deleteEndpoint('id-a');
@@ -200,7 +206,7 @@ describe('MockStoreService', () => {
 
     it('does nothing when id does not exist', async () => {
       (service as any)._endpoints.next([
-        { id: 'id-a', name: 'A', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', delay: 0, createdAt: '', isActive: true },
+        { id: 'id-a', name: 'A', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', responseHeaders: {}, webhookUrl: null, sharedWith: [], delay: 0, createdAt: '', isActive: true },
       ]);
       fromSpy.and.returnValue(queryOf({ data: null, error: null }));
       await service.deleteEndpoint('non-existent');
@@ -217,7 +223,7 @@ describe('MockStoreService', () => {
 
     it('sets isActive from true to false', async () => {
       (service as any)._endpoints.next([
-        { id: 'ep-1', name: 'A', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', delay: 0, createdAt: '', isActive: true },
+        { id: 'ep-1', name: 'A', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', responseHeaders: {}, webhookUrl: null, sharedWith: [], delay: 0, createdAt: '', isActive: true },
       ]);
       fromSpy.and.returnValue(queryOf({ data: null, error: null }));
       await service.toggleEndpoint('ep-1');
@@ -226,7 +232,7 @@ describe('MockStoreService', () => {
 
     it('sets isActive from false to true', async () => {
       (service as any)._endpoints.next([
-        { id: 'ep-1', name: 'A', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', delay: 0, createdAt: '', isActive: false },
+        { id: 'ep-1', name: 'A', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', responseHeaders: {}, webhookUrl: null, sharedWith: [], delay: 0, createdAt: '', isActive: false },
       ]);
       fromSpy.and.returnValue(queryOf({ data: null, error: null }));
       await service.toggleEndpoint('ep-1');
@@ -243,7 +249,7 @@ describe('MockStoreService', () => {
 
     it('updates only the specified fields', async () => {
       (service as any)._endpoints.next([
-        { id: 'ep-1', name: 'Original', method: 'GET', path: '/orig', statusCode: 200, responseBody: '{}', delay: 0, createdAt: '', isActive: true },
+        { id: 'ep-1', name: 'Original', method: 'GET', path: '/orig', statusCode: 200, responseBody: '{}', responseHeaders: {}, webhookUrl: null, sharedWith: [], delay: 0, createdAt: '', isActive: true },
       ]);
       fromSpy.and.returnValue(queryOf({ data: null, error: null }));
       await service.updateEndpoint('ep-1', { name: 'Updated', statusCode: 404 });
@@ -255,8 +261,8 @@ describe('MockStoreService', () => {
 
     it('does not modify other endpoints', async () => {
       (service as any)._endpoints.next([
-        { id: 'id-a', name: 'A', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', delay: 0, createdAt: '', isActive: true },
-        { id: 'id-b', name: 'B', method: 'GET', path: '/b', statusCode: 200, responseBody: '{}', delay: 0, createdAt: '', isActive: true },
+        { id: 'id-a', name: 'A', method: 'GET', path: '/a', statusCode: 200, responseBody: '{}', responseHeaders: {}, webhookUrl: null, sharedWith: [], delay: 0, createdAt: '', isActive: true },
+        { id: 'id-b', name: 'B', method: 'GET', path: '/b', statusCode: 200, responseBody: '{}', responseHeaders: {}, webhookUrl: null, sharedWith: [], delay: 0, createdAt: '', isActive: true },
       ]);
       fromSpy.and.returnValue(queryOf({ data: null, error: null }));
       await service.updateEndpoint('id-a', { name: 'A Updated' });
