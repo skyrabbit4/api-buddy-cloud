@@ -1,5 +1,6 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, OnInit } from '@angular/core';
 import { MockEndpoint, MockStoreService } from '../../services/mock-store.service';
+import { SupabaseService } from '../../services/supabase.service';
 
 @Component({
   selector: 'app-endpoint-card',
@@ -8,10 +9,13 @@ import { MockEndpoint, MockStoreService } from '../../services/mock-store.servic
   styleUrl: './endpoint-card.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EndpointCardComponent {
+export class EndpointCardComponent implements OnInit {
   @Input() endpoint!: MockEndpoint;
 
   urlCopied = false;
+  requestCount = 0;
+  recentRequests: { method: string; status_code: number; created_at: string }[] = [];
+  showHistory = false;
 
   methodColors: Record<string, string> = {
     GET: 'method-get',
@@ -29,7 +33,43 @@ export class EndpointCardComponent {
     DELETE: 'method-delete-bg',
   };
 
-  constructor(private mockStore: MockStoreService) {}
+  constructor(
+    private mockStore: MockStoreService,
+    private supabaseService: SupabaseService,
+  ) {}
+
+  async ngOnInit(): Promise<void> {
+    await this.loadStats();
+  }
+
+  private async loadStats(): Promise<void> {
+    const supabase = this.supabaseService.getSupabase();
+    if (!supabase) return;
+
+    const { count } = await supabase
+      .from('request_logs')
+      .select('id', { count: 'exact', head: true })
+      .eq('endpoint_id', this.endpoint.id);
+
+    this.requestCount = count || 0;
+  }
+
+  async toggleHistory(): Promise<void> {
+    this.showHistory = !this.showHistory;
+    if (this.showHistory && this.recentRequests.length === 0) {
+      const supabase = this.supabaseService.getSupabase();
+      if (!supabase) return;
+
+      const { data } = await supabase
+        .from('request_logs')
+        .select('method, status_code, created_at')
+        .eq('endpoint_id', this.endpoint.id)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      this.recentRequests = data || [];
+    }
+  }
 
   get mockUrl(): string {
     return `${window.location.origin}/m/${this.endpoint.id}`;

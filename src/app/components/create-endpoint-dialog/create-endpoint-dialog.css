@@ -223,3 +223,34 @@
   opacity: 0.75;
   transform: scale(0.99);
 }
+
+/* ── Response header with templates ─────────────────────── */
+.response-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.template-btns {
+  display: flex;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+}
+
+.template-btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+  border-radius: 0.25rem;
+  border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.template-btn:hover {
+  border-color: hsl(var(--primary));
+  color: hsl(var(--foreground));
+}

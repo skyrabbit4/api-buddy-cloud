@@ -10,6 +10,8 @@
         <span>Status: {{ endpoint.statusCode }}</span>
         <span>•</span>
         <span>Delay: {{ endpoint.delay }}ms</span>
+        <span>•</span>
+        <span>{{ requestCount }} requests</span>
       </div>
     </div>
 
@@ -64,6 +66,10 @@
   </div>
 
   <div class="card-actions">
+    <button class="history-btn" (click)="toggleHistory()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      History
+    </button>
     <button class="delete-btn" (click)="deleteEndpoint()">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -82,5 +88,17 @@
       </svg>
       Delete
     </button>
+  </div>
+
+  <div class="request-history" *ngIf="showHistory">
+    <div class="history-header">Recent Requests</div>
+    <div class="history-empty" *ngIf="recentRequests.length === 0">No requests yet</div>
+    <div class="history-list" *ngIf="recentRequests.length > 0">
+      <div class="history-item" *ngFor="let req of recentRequests">
+        <span class="history-method">{{ req.method }}</span>
+        <span class="history-status" [class.status-success]="req.status_code < 400" [class.status-error]="req.status_code >= 400">{{ req.status_code }}</span>
+        <span class="history-time">{{ req.created_at | date:'short' }}</span>
+      </div>
+    </div>
   </div>
 </div>

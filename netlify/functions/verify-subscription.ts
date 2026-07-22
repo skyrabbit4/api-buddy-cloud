@@ -41,7 +41,7 @@ const handler: Handler = async (event: HandlerEvent, _context: HandlerContext) =
     const match = subs.items.find(
       (s) =>
         (s.customer?.email === userEmail || s.metadata?.['supabase_user_id'] === userId) &&
-        ['active', 'on_hold', 'pending'].includes(s.status),
+        s.status === 'active',
     );
 
     if (match) {

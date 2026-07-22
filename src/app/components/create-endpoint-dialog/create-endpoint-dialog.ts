@@ -27,6 +27,18 @@ export class CreateEndpointDialogComponent {
   error: string | null = null;
   methods: HttpMethod[] = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
+  templates = [
+    { name: 'User', body: '{\n  "id": 1,\n  "name": "John Doe",\n  "email": "john@example.com",\n  "status": "active"\n}' },
+    { name: 'Product', body: '{\n  "id": 101,\n  "name": "Widget Pro",\n  "price": 29.99,\n  "currency": "USD",\n  "inStock": true\n}' },
+    { name: 'List', body: '[\n  { "id": 1, "name": "Item 1" },\n  { "id": 2, "name": "Item 2" },\n  { "id": 3, "name": "Item 3" }\n]' },
+    { name: 'Error', body: '{\n  "error": "Not Found",\n  "message": "The requested resource was not found",\n  "code": 404\n}' },
+    { name: 'Success', body: '{\n  "success": true,\n  "message": "Operation completed successfully"\n}' },
+  ];
+
+  applyTemplate(template: { name: string; body: string }): void {
+    this.responseBody = template.body;
+  }
+
   constructor(private mockStore: MockStoreService) {}
 
   open(): void {
