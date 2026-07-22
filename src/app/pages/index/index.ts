@@ -11,6 +11,7 @@ import {
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { filter, take } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { UsageService } from '../../services/usage.service';
 
@@ -42,6 +43,16 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
+
+    // Redirect logged-in users to dashboard
+    this.authService.isLoaded$.pipe(
+      filter((loaded) => loaded),
+      take(1),
+    ).subscribe(() => {
+      if (this.authService.currentSession) {
+        this.router.navigate(['/dashboard']);
+      }
+    });
 
     if (this.route.snapshot.queryParamMap.get('payment') === 'success') {
       this.showPaymentSuccess = true;
