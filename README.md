@@ -1,59 +1,105 @@
-# ApiBuddyCloud
+# MockAPI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.4.
+A mock API service that lets developers create custom endpoints for testing and prototyping.
 
-## Development server
+## Architecture
 
-To start a local development server, run:
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         Frontend (Angular)                       │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────────┐ │
+│  │  Landing │  │  Login   │  │Dashboard │  │ Create Endpoint  │ │
+│  │   Page   │  │   Page   │  │   Page   │  │     Dialog       │ │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────────────┘ │
+│                              │                                   │
+│  ┌───────────────────────────┴───────────────────────────────┐  │
+│  │                      Services Layer                        │  │
+│  │  AuthService │ MockStoreService │ UsageService │ Supabase │  │
+│  └───────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    Netlify Functions (Edge)                      │
+│  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌───────────┐  │
+│  │   /m/*     │  │  checkout  │  │  webhook   │  │  verify   │  │
+│  │ mock serve │  │  (Dodo)    │  │  (Dodo)    │  │   sub     │  │
+│  └────────────┘  └────────────┘  └────────────┘  └───────────┘  │
+└─────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                         Supabase                                 │
+│  ┌──────────────────┐  ┌──────────────────────────────────────┐ │
+│  │   Auth (OAuth)   │  │              Database                 │ │
+│  │  Google, GitHub  │  │  endpoints │ profiles │ usage │ logs │ │
+│  └──────────────────┘  └──────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Frontend | Angular 20, TypeScript, SCSS |
+| Backend | Netlify Functions (serverless) |
+| Database | Supabase (PostgreSQL + Auth) |
+| Payments | Dodo Payments |
+| Hosting | Netlify |
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── components/       # Reusable UI components
+│   ├── pages/            # Route pages (dashboard, login, etc.)
+│   ├── services/         # Business logic & API calls
+│   ├── guards/           # Route guards (auth)
+│   └── shared/           # Shared utilities
+├── environments/         # Environment configs
+└── assets/               # Static assets
+
+netlify/
+└── functions/            # Serverless functions
+    ├── mock.ts           # Serves mock endpoints (/m/*)
+    ├── create-checkout.ts
+    ├── dodo-webhook.ts
+    └── verify-subscription.ts
+
+supabase/
+└── migrations/           # Database migrations
+```
+
+## Database Schema
+
+| Table | Purpose |
+|-------|---------|
+| `endpoints` | User-created mock endpoints |
+| `profiles` | User plans & limits |
+| `usage` | Monthly request counts |
+| `request_logs` | Request analytics |
+
+## Development
 
 ```bash
+npm install
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Open http://localhost:4200
 
-## Code scaffolding
+## Environment Variables
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+| Variable | Description |
+|----------|-------------|
+| `SUPABASE_URL` | Supabase project URL |
+| `SUPABASE_KEY` | Supabase anon key |
+| `SUPABASE_SERVICE_KEY` | Supabase service role key |
+| `DODO_PAYMENTS_API_KEY` | Dodo Payments API key |
+| `DODO_WEBHOOK_SECRET` | Dodo webhook verification |
+| `DODO_PRO_PRODUCT_ID` | Pro plan product ID |
 
-```bash
-ng generate component component-name
-```
+## Deployment
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Push to `main` branch triggers auto-deploy on Netlify.
